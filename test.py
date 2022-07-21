@@ -2,13 +2,15 @@
 CSD 4523 - Python II
 CSAM   Group 02   2022S
 """
-from db.agent import AgentModel
 from db.database_conn import ConnectionPool
+from model.agent import Agent
+from model.result import Return
 
 
 def test():
     """ Application main method """
     # Database Configuration
+
     config = {
         'user': 'pybank',
         'password': 'Lambton2022S',
@@ -25,8 +27,12 @@ def test():
     # conn_pool.create_pool(**config)
     # conn = conn_pool.get_connection()
     ConnectionPool.create_pool(**config)
+    active_agent = Agent()
+    result = Return()
 
-    AgentModel.validate_agent()
+    active_agent.login("fboxe0", "ua8w6WmM", result)
+
+    print(f"Agent {active_agent.first_name} logged in")
 
 
 # Start the program

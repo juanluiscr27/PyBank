@@ -1,13 +1,14 @@
 from mysql.connector import errors
 
 from db.database_conn import ConnectionPool
+from model.result import Return
 
 
 class AgentModel:
     conn: None
 
     @classmethod
-    def validate_agent(cls):
+    def validate_agent(cls, active_agent, input_username: str, result: Return):
         conn = None
         # Request a database connection from the pool
         try:
@@ -15,22 +16,32 @@ class AgentModel:
 
             if conn.is_connected():
                 # print("Connection successful")
-                query = "SELECT * FROM agents WHERE username = %(username)s"
+                query = "SELECT username, password, first_name, last_name, position_id" \
+                        "  FROM agents " \
+                        "  WHERE username = %(username)s"
                 cursor = conn.cursor()
 
                 # Query scape parameters
                 agent_username = {
-                    'username': 'fbampkin2'
+                    'username': input_username
                 }
+
                 cursor.execute(query, agent_username)
+                if cursor.with_rows:
+                    row = cursor.fetchone()
 
-                agents = cursor.fetchall()
+                    # Unpack row fields from the result
+                    (username, password, first_name, last_name, position_id) = row
 
-                for customer in agents:
-                    row = ""
-                    for field in customer:
-                        row += str(field) + "\t"
-                    print(row)
+                    active_agent.username = username
+                    active_agent.password = password
+                    active_agent.first_name = first_name
+                    active_agent.last_name = last_name
+                    active_agent.position_id = position_id
+
+                    result.set_code("00")
+                else:
+                    result.set_code("01")
 
                 # Make sure data is committed to the database
                 conn.commit()
