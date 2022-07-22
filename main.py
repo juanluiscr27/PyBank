@@ -6,6 +6,7 @@ from db.database_conn import ConnectionPool
 import tkinter as tk
 
 from model.agent import Agent
+from model.result import Return
 from ui.gui import *
 
 
@@ -31,8 +32,7 @@ def main():
     result = Return();
 
     agent_login(window, active_agent, result)
-    #if return == 0:
-        #open search window
+
     window.mainloop()
 
 
