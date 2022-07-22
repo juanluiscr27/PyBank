@@ -16,5 +16,5 @@ class Agent:
         AgentModel.validate_agent(self, username, result)
 
         if result.code == "00":
-            if self.password == password:
+            if self.password != password:
                 result.set_code("02")
