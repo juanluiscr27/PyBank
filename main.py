@@ -27,13 +27,11 @@ def main():
 
     ConnectionPool.create_pool(**config)
 
-    active_agent = Agent()
-    window = tk.Tk()
-    result = Return();
+    main_window = GUI()
 
-    agent_login(window, active_agent, result)
+    main_window.agent_login()
 
-    window.mainloop()
+    main_window.start_gui()
 
 
 # Start the program
