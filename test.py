@@ -31,6 +31,7 @@ def test():
     active_agent = Agent()
     result = Return()
 
+
     """ Test 2: Login Agent """
     # active_agent.login("fboxe0", "ua8w6WmM", result)
     # print(f"Agent {active_agent.first_name} logged in")
@@ -39,6 +40,7 @@ def test():
     # customers = Agent.search_customer("Nan", result)
     # print("Len: ", len(customers))
     # print("Code: ", result.code)
+
 
     """ Test 4: Search Accounts """
     accounts = Agent.search_account("15", result)
