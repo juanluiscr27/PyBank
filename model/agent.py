@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from db.agent import AgentModel
+from model.account import Account
 
 
 @dataclass(kw_only=True, slots=True)
@@ -47,6 +48,11 @@ class Agent:
         AgentModel.create_customer(new_customer, result)
 
     @staticmethod
-    def open_customer():
+    def open_account(new_account, result):
         """ Create a new bank account """
-        pass
+        acc_number = Account.generate_acc_num(1, result)
+        new_account.acc_number = acc_number
+        print(new_account)
+        AgentModel.open_account(new_account, result)
+
+

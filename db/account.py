@@ -7,9 +7,8 @@ from model.result import Return
 class AccountModel:
 
 	@classmethod
-	def view_acc_numbers(cls, result: Return):
+	def view_acc_numbers(cls, account_numbers: list, result: Return):
 		conn = None
-		account_numbers = []
 		# Request a database connection from the pool
 		try:
 			conn = ConnectionPool.get_connection()

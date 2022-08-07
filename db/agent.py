@@ -224,21 +224,22 @@ class AgentModel:
             if conn.is_connected():
                 # print("Connection successful")
                 query = "INSERT INTO accounts" \
-                        "  (acc_type_id, balance, transfer_amount, transfer_quantity, " \
-                        "  customer_id, open_date, agent_id) " \
-                        "VALUES (%(acc_type_id)s, %(balance)s, %(transfer_amount)s, " \
+                        "  (acc_number, acc_type, balance, transfer_amount, " \
+                        "  transfer_quantity, customer_id, open_date, agent_id) " \
+                        "VALUES (%(acc_number)s, %(acc_type)s, %(balance)s, %(transfer_amount)s, " \
                         "  %(transfer_quantity)s, %(customer_id)s, %(open_date)s, %(agent_id)s)"
                 cursor = conn.cursor()
 
                 # Query scape parameters
                 account_info = {
                     'acc_number': new_account.acc_number,
-                    'acc_type_id': new_account.acc_type_id,
+                    'acc_type': new_account.acc_type_id,
                     'balance': new_account.balance,
                     'transfer_amount': new_account.transfer_amount,
                     'transfer_quantity': new_account.transfer_quantity,
                     'customer_id': new_account.customer_id,
-                    'open_date': new_account.agent_id
+                    'open_date': new_account.open_date,
+                    'agent_id': new_account.agent_id
                 }
                 cursor.execute(query, account_info)
                 cursor.close()
