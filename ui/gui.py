@@ -58,11 +58,23 @@ class GUI:
 
     @classmethod
     def create_top_menu(cls):
+        def logout():
+            areas = cls.window.winfo_children()
+            for item in areas:
+                item.destroy()
+            cls.agent_login()
+
         def search():
             areas = cls.window.winfo_children()
             for item in areas:
                 item.destroy()
             cls.search()
+
+        def new_customer():
+            areas = cls.window.winfo_children()
+            for item in areas:
+                item.destroy()
+            cls.new_customer()
 
         def about():
             tk.messagebox.showinfo('About', 'This software was created by Hugo Beltran Escarraga and Juan Luis Casanova Romero.\n\nLambton College - CSAM\nCSD 4523 Python II - Term project')
@@ -71,13 +83,12 @@ class GUI:
         cls.window.config(menu=menu_bar)
 
         menu_agent = Menu(menu_bar, tearoff=0)
-        menu_agent.add_command(label="Log in")
-        menu_agent.add_command(label="Log out")
+        menu_agent.add_command(label="Log out", command=logout)
         menu_bar.add_cascade(label="Agent", menu=menu_agent)
 
         menu_customer = Menu(menu_bar, tearoff=0)
         menu_customer.add_command(label="Search", command=search)
-        menu_customer.add_command(label="New customer")
+        menu_customer.add_command(label="New customer", command=new_customer)
         menu_bar.add_cascade(label="Customer", menu=menu_customer)
 
         menu_help = Menu(menu_bar, tearoff=0)
@@ -193,12 +204,75 @@ class GUI:
         accounts_results_button.grid(column=5, row=4, padx=10)
 
     @classmethod
+    def new_customer(cls):
+        def action_create_customer():
+            area.destroy()
+            cls.view_customer()
+
+        cls.window.geometry("1200x700")
+        cls.create_top_menu()
+
+        agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
+        agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
+
+        area = ttk.LabelFrame(cls.window, text="New customer")
+        area.grid(column=0, row=1, padx=50, pady=20)
+
+        customer_first_name_label = ttk.Label(area, text="First name")
+        customer_first_name_label.grid(column=0, row=0, padx=20)
+
+        customer_first_name = tk.StringVar()
+        customer_first_name_text = ttk.Entry(area, width=50, textvariable=customer_first_name)
+        customer_first_name_text.grid(column=1, row=0, padx=20, sticky="W")
+
+        customer_last_name_label = ttk.Label(area, text="Last name")
+        customer_last_name_label.grid(column=0, row=1, padx=20)
+
+        customer_last_name = tk.StringVar()
+        customer_last_name_text = ttk.Entry(area, width=50, textvariable=customer_last_name)
+        customer_last_name_text.grid(column=1, row=1, padx=20, sticky="W")
+
+        customer_address_label = ttk.Label(area, text="Address")
+        customer_address_label.grid(column=0, row=2, padx=20)
+
+        customer_address = tk.StringVar()
+        customer_address_text = ttk.Entry(area, width=50, textvariable=customer_address)
+        customer_address_text.grid(column=1, row=2, padx=20, sticky="W")
+
+        customer_phone_label = ttk.Label(area, text="Phone")
+        customer_phone_label.grid(column=0, row=3, padx=20)
+
+        customer_phone = tk.StringVar()
+        customer_phone_text = ttk.Entry(area, width=20, textvariable=customer_phone)
+        customer_phone_text.grid(column=1, row=3, padx=20, sticky="W")
+
+        customer_email_label = ttk.Label(area, text="Email")
+        customer_email_label.grid(column=0, row=4, padx=20)
+
+        customer_email = tk.StringVar()
+        customer_email_text = ttk.Entry(area, width=30, textvariable=customer_email)
+        customer_email_text.grid(column=1, row=4, padx=20, sticky="W")
+
+        customer_pin_label = ttk.Label(area, text="PIN")
+        customer_pin_label.grid(column=0, row=5, padx=20)
+
+        customer_pin = tk.StringVar()
+        customer_pin_text = ttk.Entry(area, width=10, show='*', textvariable=customer_pin)
+        customer_pin_text.grid(column=1, row=5, padx=20, sticky="W")
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=5, row=6, padx=20)
+
+        create_customer_button = ttk.Button(area, text="Create customer", command=action_create_customer)
+        create_customer_button.grid(column=0, row=7, columnspan=6, padx=10)
+        create_customer_button.config(width=50)
+
+    @classmethod
     def view_customer(cls):
 
         def action_account():
             area.destroy()
             cls.view_account()
-
         def action_open_account():
             area.destroy()
             cls.open_account()
@@ -280,6 +354,73 @@ class GUI:
 
         view_account_button = ttk.Button(area, text="View account", command=action_account)
         view_account_button.grid(column=5, row=5, padx=10)
+
+    @classmethod
+    def open_account(cls):
+        def action_open_account():
+            area.destroy()
+            cls.view_account()
+
+        cls.window.geometry("1200x700")
+        cls.create_top_menu()
+
+        agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
+        agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
+
+        area = ttk.LabelFrame(cls.window, text="Open account")
+        area.grid(column=0, row=1, padx=50, pady=20)
+
+        id_label = ttk.Label(area, text="Customer ID")
+        id_label.grid(column=0, row=0, padx=20)
+
+        customer_id_label = ttk.Label(area, text="1")
+        customer_id_label.grid(column=0, row=1, padx=20)
+
+        name_label = ttk.Label(area, text="Name")
+        name_label.grid(column=1, row=0, padx=20)
+
+        customer_name_label = ttk.Label(area, text="Ninja Gaiden")
+        customer_name_label.grid(column=1, row=1, padx=20)
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=0, row=2, padx=20)
+
+        account_type_frame = ttk.LabelFrame(area, text="Account type")
+        account_type_frame.grid(column=0, row=3, padx=20, rowspan=4)
+
+        account_type_values = ["Checking", "Saving", "Investing"]
+        account_type = tk.IntVar()
+
+        for i in range(3):
+            account_type_radio = tk.Radiobutton(account_type_frame, text=account_type_values[i], variable=account_type, value=i)
+            account_type_radio.grid(column=0, row=i, padx=20)
+
+        interest_label = ttk.Label(area, text="Interest rate")
+        interest_label.grid(column=1, row=3, padx=20)
+
+        interest_rate_label = ttk.Label(area, text="5%")
+        interest_rate_label.grid(column=2, row=3, padx=20)
+
+        amount_label = ttk.Label(area, text="Amount limit")
+        amount_label.grid(column=1, row=4, padx=20)
+
+        amount_limit_label = ttk.Label(area, text="$1000")
+        amount_limit_label.grid(column=2, row=4, padx=20)
+
+        quantity_label = ttk.Label(area, text="Quantity limit")
+        quantity_label.grid(column=1, row=5, padx=20)
+
+        quantity_limit_label = ttk.Label(area, text="10")
+        quantity_limit_label.grid(column=2, row=5, padx=20)
+
+        balance_label = ttk.Label(area, text="Minimum balance")
+        balance_label.grid(column=1, row=6, padx=20)
+
+        minimum_balance_label = ttk.Label(area, text="$5000")
+        minimum_balance_label.grid(column=2, row=6, padx=20)
+
+        open_account_button = ttk.Button(area, text="Open account", command=action_open_account)
+        open_account_button.grid(column=1, row=7, padx=20, pady=30)
 
     @classmethod
     def view_account(cls):
@@ -437,21 +578,6 @@ class GUI:
         agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
 
         area = ttk.LabelFrame(cls.window, text="Delete Customer")
-        area.grid(column=0, row=1, padx=50, pady=20)
-
-    @classmethod
-    def open_account(cls):
-        def action_open():
-            area.destroy()
-            cls.view_account()
-
-        cls.window.geometry("1200x700")
-        cls.create_top_menu()
-
-        agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
-        agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
-
-        area = ttk.LabelFrame(cls.window, text="Open account")
         area.grid(column=0, row=1, padx=50, pady=20)
 
     @classmethod
