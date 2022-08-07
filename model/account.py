@@ -11,3 +11,9 @@ class Account:
 	transfer_quantity: int
 	customer_id: int
 	open_date: date
+
+	@staticmethod
+	def view_account():
+		""" Search bank account based on an account id """
+		pass
+

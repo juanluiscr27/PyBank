@@ -22,17 +22,30 @@ def test():
     }
 
     print("* PyBank Project Test *")
-
+    """ Test 1: Connection Pool"""
     # conn_pool = ConnectionPool()
     # conn_pool.create_pool(**config)
     # conn = conn_pool.get_connection()
+
     ConnectionPool.create_pool(**config)
     active_agent = Agent()
     result = Return()
 
-    active_agent.login("fboxe0", "ua8w6WmM", result)
 
-    print(f"Agent {active_agent.first_name} logged in")
+    """ Test 2: Login Agent """
+    # active_agent.login("fboxe0", "ua8w6WmM", result)
+    # print(f"Agent {active_agent.first_name} logged in")
+
+    """ Test 3: Search Customers """
+    # customers = Agent.search_customer("Nan", result)
+    # print("Len: ", len(customers))
+    # print("Code: ", result.code)
+
+
+    """ Test 4: Search Accounts """
+    accounts = Agent.search_account("15", result)
+    print("Len: ", len(accounts))
+    print("Code: ", result.code)
 
 
 # Start the program

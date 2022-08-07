@@ -11,3 +11,4 @@ class Customer:
     phone_number: str
     email: str
     creation_date: str
+    agent_id: int
