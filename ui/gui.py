@@ -268,8 +268,108 @@ class GUI:
         create_customer_button.config(width=50)
 
     @classmethod
-    def view_customer(cls):
+    def update_customer(cls):
+        def action_update_customer():
+            area.destroy()
+            cls.view_customer()
 
+        cls.window.geometry("1200x700")
+        cls.create_top_menu()
+
+        agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
+        agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
+
+        area = ttk.LabelFrame(cls.window, text="Update customer")
+        area.grid(column=0, row=1, padx=50, pady=20)
+
+        customer_first_name_label = ttk.Label(area, text="First name")
+        customer_first_name_label.grid(column=0, row=0, padx=20)
+
+        customer_first_name = tk.StringVar()
+        customer_first_name_text = ttk.Entry(area, width=50, textvariable=customer_first_name)
+        customer_first_name_text.grid(column=1, row=0, padx=20, sticky="W")
+
+        customer_last_name_label = ttk.Label(area, text="Last name")
+        customer_last_name_label.grid(column=0, row=1, padx=20)
+
+        customer_last_name = tk.StringVar()
+        customer_last_name_text = ttk.Entry(area, width=50, textvariable=customer_last_name)
+        customer_last_name_text.grid(column=1, row=1, padx=20, sticky="W")
+
+        customer_address_label = ttk.Label(area, text="Address")
+        customer_address_label.grid(column=0, row=2, padx=20)
+
+        customer_address = tk.StringVar()
+        customer_address_text = ttk.Entry(area, width=50, textvariable=customer_address)
+        customer_address_text.grid(column=1, row=2, padx=20, sticky="W")
+
+        customer_phone_label = ttk.Label(area, text="Phone")
+        customer_phone_label.grid(column=0, row=3, padx=20)
+
+        customer_phone = tk.StringVar()
+        customer_phone_text = ttk.Entry(area, width=20, textvariable=customer_phone)
+        customer_phone_text.grid(column=1, row=3, padx=20, sticky="W")
+
+        customer_pin_label = ttk.Label(area, text="PIN")
+        customer_pin_label.grid(column=0, row=5, padx=20)
+
+        customer_pin = tk.StringVar()
+        customer_pin_text = ttk.Entry(area, width=10, show='*', textvariable=customer_pin)
+        customer_pin_text.grid(column=1, row=5, padx=20, sticky="W")
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=5, row=6, padx=20)
+
+        update_customer_button = ttk.Button(area, text="Update customer", command=action_update_customer)
+        update_customer_button.grid(column=0, row=7, columnspan=6, padx=10)
+        update_customer_button.config(width=50)
+
+    @classmethod
+    def delete_customer(cls):
+        def action_delete_customer():
+            area.destroy()
+            cls.search()
+
+        def action_account():
+            area.destroy()
+            cls.view_account()
+
+        cls.window.geometry("1200x700")
+        cls.create_top_menu()
+
+        agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
+        agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
+
+        area = ttk.LabelFrame(cls.window, text="Delete Customer")
+        area.grid(column=0, row=1, padx=50, pady=20)
+
+        id_label = ttk.Label(area, text="ID")
+        id_label.grid(column=0, row=0, padx=20)
+
+        customer_id_label = ttk.Label(area, text="1")
+        customer_id_label.grid(column=0, row=1, padx=20)
+
+        customer_name_label = ttk.Label(area, text="Ninja Gaiden")
+        customer_name_label.grid(column=1, row=0, padx=20)
+
+        customer_address_label = ttk.Label(area, text="101 Weston")
+        customer_address_label.grid(column=2, row=0, padx=20)
+
+        customer_phone_label = ttk.Label(area, text="1234567890")
+        customer_phone_label.grid(column=3, row=0, padx=20)
+
+        customer_email_label = ttk.Label(area, text="ryu@hotmail.com")
+        customer_email_label.grid(column=4, row=0, padx=20)
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=5, row=0, padx=20)
+
+        delete_customer_button = ttk.Button(area, text="Delete customer", command=action_delete_customer)
+        delete_customer_button.grid(column=6, row=0, padx=10)
+        delete_customer_button.config(width=50)
+
+    @classmethod
+    def view_customer(cls):
         def action_account():
             area.destroy()
             cls.view_account()
@@ -423,6 +523,73 @@ class GUI:
         open_account_button.grid(column=1, row=7, padx=20, pady=30)
 
     @classmethod
+    def delete_account(cls):
+        def action_delete_account():
+            area.destroy()
+            cls.search()
+
+        cls.window.geometry("1200x700")
+        cls.create_top_menu()
+
+        agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
+        agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
+
+        area = ttk.LabelFrame(cls.window, text="Delete account")
+        area.grid(column=0, row=1, padx=50, pady=20)
+
+        id_label = ttk.Label(area, text="Customer ID")
+        id_label.grid(column=0, row=0, padx=20)
+
+        customer_id_label = ttk.Label(area, text="1")
+        customer_id_label.grid(column=0, row=1, padx=20)
+
+        name_label = ttk.Label(area, text="Name")
+        name_label.grid(column=1, row=0, padx=20)
+
+        customer_name_label = ttk.Label(area, text="Ninja Gaiden")
+        customer_name_label.grid(column=1, row=1, padx=20)
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=0, row=2, padx=20)
+
+        number_label = ttk.Label(area, text="Account number")
+        number_label.grid(column=0, row=3, padx=20)
+
+        account_number_label = ttk.Label(area, text="109970001")
+        account_number_label.grid(column=0, row=4, padx=20)
+
+        type_label = ttk.Label(area, text="Type")
+        type_label.grid(column=1, row=3, padx=20)
+
+        account_type_label = ttk.Label(area, text="Checking")
+        account_type_label.grid(column=1, row=4, padx=20)
+
+        balance_label = ttk.Label(area, text="Balance")
+        balance_label.grid(column=2, row=3, padx=20)
+
+        account_balance_label = ttk.Label(area, text="$1000")
+        account_balance_label.grid(column=2, row=4, padx=20)
+
+        transferred_label = ttk.Label(area, text="Transferred")
+        transferred_label.grid(column=3, row=3, padx=20)
+
+        account_transferred_label = ttk.Label(area, text="$300")
+        account_transferred_label.grid(column=3, row=4, padx=20)
+
+        transfers_label = ttk.Label(area, text="Transfers")
+        transfers_label.grid(column=4, row=3, padx=20)
+
+        account_transfers_label = ttk.Label(area, text="2")
+        account_transfers_label.grid(column=4, row=4, padx=20)
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=5, row=0, padx=20)
+
+        delete_account_button = ttk.Button(area, text="Delete account", command=action_delete_account)
+        delete_account_button.grid(column=6, row=0, padx=10)
+        delete_account_button.config(width=50)
+
+    @classmethod
     def view_account(cls):
         def action_deposit():
             area.destroy()
@@ -551,36 +718,6 @@ class GUI:
         account_movements.insert(parent='', index='end', values=('02-AUG-2022', 'Withdrawal', '$150'))
 
     @classmethod
-    def update_customer(cls):
-        def action_update():
-            area.destroy()
-            cls.view_customer()
-
-        cls.window.geometry("1200x700")
-        cls.create_top_menu()
-
-        agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
-        agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
-
-        area = ttk.LabelFrame(cls.window, text="Update customer")
-        area.grid(column=0, row=1, padx=50, pady=20)
-
-    @classmethod
-    def delete_customer(cls):
-        def action_delete():
-            area.destroy()
-            cls.search()
-
-        cls.window.geometry("1200x700")
-        cls.create_top_menu()
-
-        agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
-        agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
-
-        area = ttk.LabelFrame(cls.window, text="Delete Customer")
-        area.grid(column=0, row=1, padx=50, pady=20)
-
-    @classmethod
     def deposit(cls):
         def action_deposit():
             area.destroy()
@@ -594,6 +731,32 @@ class GUI:
 
         area = ttk.LabelFrame(cls.window, text="Deposit")
         area.grid(column=0, row=1, padx=50, pady=20)
+
+        id_label = ttk.Label(area, text="Customer ID")
+        id_label.grid(column=0, row=0, padx=20)
+
+        customer_id_label = ttk.Label(area, text="1")
+        customer_id_label.grid(column=0, row=1, padx=20)
+
+        customer_name_label = ttk.Label(area, text="Ninja Gaiden")
+        customer_name_label.grid(column=1, row=0, padx=20)
+
+        account_number_label = ttk.Label(area, text="109970001")
+        account_number_label.grid(column=2, row=0, padx=20)
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=0, row=2, padx=20)
+
+        amount_label = ttk.Label(area, text="Amount")
+        amount_label.grid(column=0, row=3, padx=20)
+
+        deposit = tk.DoubleVar()
+        deposit_text = ttk.Entry(area, width=20, textvariable=deposit)
+        deposit_text.grid(column=1, row=3, padx=20, sticky="W")
+
+        deposit_button = ttk.Button(area, text="Deposit", command=action_deposit)
+        deposit_button.grid(column=2, row=3, padx=10)
+        deposit_button.config(width=50)
 
     @classmethod
     def withdrawal(cls):
@@ -610,6 +773,32 @@ class GUI:
         area = ttk.LabelFrame(cls.window, text="Withdrawal")
         area.grid(column=0, row=1, padx=50, pady=20)
 
+        id_label = ttk.Label(area, text="Customer ID")
+        id_label.grid(column=0, row=0, padx=20)
+
+        customer_id_label = ttk.Label(area, text="1")
+        customer_id_label.grid(column=0, row=1, padx=20)
+
+        customer_name_label = ttk.Label(area, text="Ninja Gaiden")
+        customer_name_label.grid(column=1, row=0, padx=20)
+
+        account_number_label = ttk.Label(area, text="109970001")
+        account_number_label.grid(column=2, row=0, padx=20)
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=0, row=2, padx=20)
+
+        amount_label = ttk.Label(area, text="Amount")
+        amount_label.grid(column=0, row=3, padx=20)
+
+        withdrawal = tk.DoubleVar()
+        withdrawal_text = ttk.Entry(area, width=20, textvariable=withdrawal)
+        withdrawal_text.grid(column=1, row=3, padx=20, sticky="W")
+
+        withdrawal_button = ttk.Button(area, text="Withdrawal", command=action_withdrawal)
+        withdrawal_button.grid(column=2, row=3, padx=10)
+        withdrawal_button.config(width=50)
+
     @classmethod
     def transfer_own(cls):
         def action_transfer():
@@ -625,9 +814,42 @@ class GUI:
         area = ttk.LabelFrame(cls.window, text="Transfer to own")
         area.grid(column=0, row=1, padx=50, pady=20)
 
+        id_label = ttk.Label(area, text="Customer ID")
+        id_label.grid(column=0, row=0, padx=20)
+
+        customer_id_label = ttk.Label(area, text="1")
+        customer_id_label.grid(column=0, row=1, padx=20)
+
+        customer_name_label = ttk.Label(area, text="Ninja Gaiden")
+        customer_name_label.grid(column=1, row=0, padx=20)
+
+        account_number_label = ttk.Label(area, text="109970001")
+        account_number_label.grid(column=2, row=0, padx=20)
+
+        account_number_label = ttk.Label(area, text="Destination account")
+        account_number_label.grid(column=0, row=2, padx=20)
+
+        destination_account = tk.StringVar()
+        destination_account_text = ttk.Entry(area, width=20, textvariable=destination_account)
+        destination_account_text.grid(column=0, row=3, padx=20, sticky="W")
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=0, row=4, padx=20)
+
+        amount_label = ttk.Label(area, text="Amount")
+        amount_label.grid(column=0, row=5, padx=20)
+
+        transfer = tk.DoubleVar()
+        transfer_text = ttk.Entry(area, width=20, textvariable=transfer)
+        transfer_text.grid(column=1, row=5, padx=20, sticky="W")
+
+        transfer_button = ttk.Button(area, text="Transfer own", command=action_transfer)
+        transfer_button.grid(column=2, row=5, padx=10)
+        transfer_button.config(width=50)
+
     @classmethod
     def transfer_others(cls):
-        def action_deposit():
+        def action_transfer():
             area.destroy()
             cls.view_account()
 
@@ -640,17 +862,35 @@ class GUI:
         area = ttk.LabelFrame(cls.window, text="Transfer to others")
         area.grid(column=0, row=1, padx=50, pady=20)
 
-    @classmethod
-    def delete_account(cls):
-        def action_delete():
-            area.destroy()
-            cls.search()
+        id_label = ttk.Label(area, text="Customer ID")
+        id_label.grid(column=0, row=0, padx=20)
 
-        cls.window.geometry("1200x700")
-        cls.create_top_menu()
+        customer_id_label = ttk.Label(area, text="1")
+        customer_id_label.grid(column=0, row=1, padx=20)
 
-        agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
-        agent_name_label.grid(column=0, row=0, padx=50, sticky="E")
+        customer_name_label = ttk.Label(area, text="Ninja Gaiden")
+        customer_name_label.grid(column=1, row=0, padx=20)
 
-        area = ttk.LabelFrame(cls.window, text="Delete account")
-        area.grid(column=0, row=1, padx=50, pady=20)
+        account_number_label = ttk.Label(area, text="109970001")
+        account_number_label.grid(column=2, row=0, padx=20)
+
+        account_number_label = ttk.Label(area, text="Destination account")
+        account_number_label.grid(column=0, row=2, padx=20)
+
+        destination_account = tk.StringVar()
+        destination_account_text = ttk.Entry(area, width=20, textvariable=destination_account)
+        destination_account_text.grid(column=0, row=3, padx=20, sticky="W")
+
+        space_label = ttk.Label(area, text=" ")
+        space_label.grid(column=0, row=4, padx=20)
+
+        amount_label = ttk.Label(area, text="Amount")
+        amount_label.grid(column=0, row=5, padx=20)
+
+        transfer = tk.DoubleVar()
+        transfer_text = ttk.Entry(area, width=20, textvariable=transfer)
+        transfer_text.grid(column=1, row=5, padx=20, sticky="W")
+
+        transfer_button = ttk.Button(area, text="Transfer others", command=action_transfer)
+        transfer_button.grid(column=2, row=5, padx=10)
+        transfer_button.config(width=50)
