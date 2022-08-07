@@ -25,7 +25,10 @@ class Agent:
             Return a list of customers who satisfy the search criteria. """
         customers_result = []
         AgentModel.search_customer(search_string, customers_result, result)
-        return customers_result
+        if result.code == "00":
+            return customers_result
+        else:
+            return None
 
     @staticmethod
     def search_account(search_string, result):
@@ -33,12 +36,15 @@ class Agent:
             Return a list of accounts who satisfy the search criteria. """
         account_result = []
         AgentModel.search_account(search_string, account_result, result)
-        return account_result
+        if result.code == "00":
+            return account_result
+        else:
+            return None
 
     @staticmethod
-    def create_customer():
+    def create_customer(new_customer, result):
         """ Create a new bank customer """
-        pass
+        AgentModel.create_customer(new_customer, result)
 
     @staticmethod
     def open_customer():
