@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 
 
 @dataclass(kw_only=True, slots=True)
@@ -10,5 +11,5 @@ class Customer:
     address: str
     phone_number: str
     email: str
-    creation_date: str
-    agent_id: int
+    creation_date: datetime
+    agent_id: str
