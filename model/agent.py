@@ -54,5 +54,3 @@ class Agent:
         new_account.acc_number = acc_number
         print(new_account)
         AgentModel.open_account(new_account, result)
-
-

@@ -3,7 +3,7 @@ from datetime import date
 from random import randint
 
 from db.account import AccountModel
-from db.product import ProductModel
+from model.product import Product
 
 
 def get_new_acc_num(acc_type_id: int):
@@ -20,11 +20,6 @@ def get_new_acc_num(acc_type_id: int):
 	return str(acc_number)
 
 
-def get_account_type(acc_type_id: int):
-	products = ProductModel.get_product_type()
-	return products[acc_type_id]
-
-
 @dataclass(kw_only=True, slots=True)
 class Account:
 	acc_number: str
@@ -38,7 +33,7 @@ class Account:
 	acc_type: str = field(init=False)
 
 	def __post_init__(self):
-		self.acc_type = get_account_type(self.acc_type_id)
+		self.acc_type = Product.get_account_type(self.acc_type_id)
 
 	@staticmethod
 	def view_account():

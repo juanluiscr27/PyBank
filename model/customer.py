@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 
 from db.customer import CustomerModel
@@ -17,9 +17,23 @@ class Customer:
     agent_id: str
 
     @staticmethod
-    def view_customer(active_customer, result):
+    def view_customer(customer_id, result):
         customer_accounts = []
-        CustomerModel.view_customer(active_customer, customer_accounts, result)
-        print(result.code)
+        CustomerModel.view_customer(customer_id, customer_accounts, result)
+
         if result.code == "00":
-            print(customer_accounts)
+            return customer_accounts
+
+    @staticmethod
+    def update_customer(active_customer, result):
+        CustomerModel.update_customer(active_customer, result)
+
+    @staticmethod
+    def delete_customer(active_customer, result):
+        delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        if len(Customer.view_customer(active_customer.customer_id, result)) > 0:
+            result.set_code("04")
+            print(result.message)
+        else:
+            pass
+            # CustomerModel.delete_customer(active_customer, delete_date, result)

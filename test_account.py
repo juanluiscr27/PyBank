@@ -8,11 +8,11 @@ from model.customer import Customer
 from model.result import Return
 
 
-print("* Tests for Customer Model *")
+print("* Tests for Account Model *")
 
 
 # Test 1: View Customer
-def test_view_customer():
+def test_view_acc_num():
     result = Return()
     customer_id = 11
 
@@ -20,7 +20,7 @@ def test_view_customer():
     print(customer_view)
 
 
-def test_update_customer():
+def test_view_account():
     result = Return()
     active_customer = Customer(
         customer_id=11,
@@ -36,20 +36,3 @@ def test_update_customer():
 
     Customer.update_customer(active_customer, result)
 
-
-def test_delete_customer():
-    # TODO
-    result = Return()
-    active_customer = Customer(
-        customer_id=11,
-        pin="1234",
-        first_name="Juan Luis",
-        last_name="Casanova",
-        address="Bentley",
-        phone_number="9876543210",
-        email="juan@email.com",
-        creation_date=datetime.now(),
-        agent_id='jmisk5'
-    )
-
-    Customer.delete_customer(active_customer, result)

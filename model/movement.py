@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 
 @dataclass(kw_only=True, slots=True)
@@ -9,5 +10,5 @@ class Movement:
     amount: str
     previous_balance: str
     new_balance: str
-    movement_date: str
+    movement_date: datetime
     description: str

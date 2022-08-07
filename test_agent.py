@@ -23,24 +23,18 @@ config = {
 
 print("* Tests for Agent Model *")
 
-""" Test 1: Connection Pool"""
-# conn_pool = ConnectionPool()
-# conn_pool.create_pool(**config)
-# conn = conn_pool.get_connection()
-
-ConnectionPool.create_pool(**config)
-active_agent = Agent()
-result = Return()
-
 
 # Test 2: Login Agent
 def test_agent_login():
+    active_agent = Agent()
+    result = Return()
     active_agent.login("fboxe0", "ua8w6WmM", result)
     print(f"Agent {active_agent.first_name} logged in")
 
 
 # Test 3: Search Customers
-def test_search_customer():
+def test_search_customers():
+    result = Return()
     customers = Agent.search_customer("Nan", result)
     print("Len: ", len(customers))
     print("Code: ", result.code)
@@ -48,6 +42,7 @@ def test_search_customer():
 
 # Test 4: Search Accounts """
 def test_search_accounts():
+    result = Return()
     accounts = Agent.search_account("15", result)
     print("Len: ", len(accounts))
     print("Code: ", result.code)
@@ -55,6 +50,7 @@ def test_search_accounts():
 
 # Test 5: Create Customer
 def test_create_customer():
+    result = Return()
     new_customer = Customer(
         customer_id=0,
         pin="1234",
@@ -76,7 +72,8 @@ def test_search_products():
 
 
 # Test 7: Create Account """
-def search_create_account():
+def test_open_account():
+    result = Return()
     new_account = Account(
         acc_number="",
         acc_type_id=1,
