@@ -108,18 +108,21 @@ class GUI:
                 customers_results.delete(i)
             for i in accounts_results.get_children():
                 accounts_results.delete(i)
-            cls.customers = Agent.search_customer(search_string.get(), cls.result)
-            if cls.result.code == "00":
-                for i in cls.customers:
-                    customers_results.insert(parent='', index='end', values=(i.customer_id, i.first_name + " " + i.last_name, i.address, i.phone_number, i.email))
+            if search_string.get() != '':
+                cls.customers = Agent.search_customer(search_string.get(), cls.result)
+                if cls.result.code == "00":
+                    for i in cls.customers:
+                        customers_results.insert(parent='', index='end', values=(i.customer_id, i.first_name + " " + i.last_name, i.address, i.phone_number, i.email))
+                else:
+                    tk.messagebox.showinfo('PyBank', 'No customers found')
+                cls.accounts = Agent.search_account(search_string.get(), cls.result)
+                if cls.result.code == "00":
+                    for i in cls.accounts:
+                        accounts_results.insert(parent='', index='end', values=(i.acc_number, i.acc_type, i.balance, i.transfer_amount, i.transfer_quantity, i.customer_id, i.open_date))
+                else:
+                    tk.messagebox.showinfo('PyBank', 'No accounts found')
             else:
-                tk.messagebox.showinfo('PyBank', 'No customers found')
-            cls.accounts = Agent.search_account(search_string.get(), cls.result)
-            if cls.result.code == "00":
-                for i in cls.accounts:
-                    accounts_results.insert(parent='', index='end', values=(i.acc_number, i.acc_type, i.balance, i.transfer_amount, i.transfer_quantity, i.customer_id, i.open_date))
-            else:
-                tk.messagebox.showinfo('PyBank', 'No accounts found')
+                tk.messagebox.showinfo('PyBank', 'Input search string')
         def action_customer():
             area.destroy()
             cls.view_customer()
@@ -260,21 +263,24 @@ class GUI:
     @classmethod
     def new_customer(cls):
         def action_confirm():
-            cls.active_customer.pin=customer_pin.get()
-            cls.active_customer.first_name=customer_first_name.get()
-            cls.active_customer.last_name=customer_last_name.get()
-            cls.active_customer.address=customer_address.get()
-            cls.active_customer.phone_number=customer_phone.get()
-            cls.active_customer.email=customer_email.get()
-            cls.active_customer.creation_date=datetime.now()
-            cls.active_customer.agent_id=cls.active_agent.username
-            Agent.create_customer(cls.active_customer, cls.result)
-            if cls.result.code == "00":
-                tk.messagebox.showinfo('PyBank', 'Customer ' + str(cls.active_customer.customer_id) + ' created')
-                area.destroy()
-                cls.view_customer()
+            if customer_pin.get() != "" and customer_first_name.get() != "" and customer_last_name.get() != "" and customer_address.get() != "" and customer_phone.get() != "" and customer_email.get() != "":
+                cls.active_customer.pin=customer_pin.get()
+                cls.active_customer.first_name=customer_first_name.get()
+                cls.active_customer.last_name=customer_last_name.get()
+                cls.active_customer.address=customer_address.get()
+                cls.active_customer.phone_number=customer_phone.get()
+                cls.active_customer.email=customer_email.get()
+                cls.active_customer.creation_date=datetime.now()
+                cls.active_customer.agent_id=cls.active_agent.username
+                Agent.create_customer(cls.active_customer, cls.result)
+                if cls.result.code == "00":
+                    tk.messagebox.showinfo('PyBank', 'Customer ' + str(cls.active_customer.customer_id) + ' created')
+                    area.destroy()
+                    cls.view_customer()
+                else:
+                    tk.messagebox.showinfo('PyBank', cls.result.code + " - " + cls.result.message)
             else:
-                tk.messagebox.showinfo('PyBank', cls.result.code + " - " + cls.result.message)
+                tk.messagebox.showinfo('PyBank', 'All fields are required')
         def action_cancel():
             area.destroy()
             cls.search()
@@ -324,13 +330,16 @@ class GUI:
     @classmethod
     def update_customer(cls):
         def action_confirm():
-            cls.active_agent.update_customer(cls.active_customer, cls.result)
-            if cls.result.code == "00":
-                tk.messagebox.showinfo('PyBank', 'Customer ' + cls.active_customer.customer_id + ' updated')
-                area.destroy()
-                cls.view_customer()
+            if customer_pin.get() != "" and customer_first_name.get() != "" and customer_last_name.get() != "" and customer_address.get() != "" and customer_phone.get() != "" and customer_email.get() != "":
+                cls.active_agent.update_customer(cls.active_customer, cls.result)
+                if cls.result.code == "00":
+                    tk.messagebox.showinfo('PyBank', 'Customer ' + cls.active_customer.customer_id + ' updated')
+                    area.destroy()
+                    cls.view_customer()
+                else:
+                    tk.messagebox.showinfo('PyBank', cls.result.code + " - " + cls.result.message)
             else:
-                tk.messagebox.showinfo('PyBank', cls.result.code + " - " + cls.result.message)
+                tk.messagebox.showinfo('PyBank', 'All fields are required')
         def action_cancel():
             area.destroy()
             cls.view_customer()
