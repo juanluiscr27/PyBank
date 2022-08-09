@@ -1,9 +1,13 @@
+import tkinter.messagebox
+
 from ui import *
+from model import util
 
 class GUI:
 
     active_agent = Agent()
     active_customer = Customer()
+    active_account = None
     window = tk.Tk()
     result = Return()
     customers = []
@@ -109,23 +113,27 @@ class GUI:
             for i in accounts_results.get_children():
                 accounts_results.delete(i)
             if search_string.get() != '':
-                cls.customers = Agent.search_customer(search_string.get(), cls.result)
+                cls.customers = util.search_customer(search_string.get(), cls.result)
                 if cls.result.code == "00":
                     for i in cls.customers:
-                        customers_results.insert(parent='', index='end', values=(i.customer_id, i.first_name + " " + i.last_name, i.address, i.phone_number, i.email))
+                        customers_results.insert(parent='', index='end', values=(i.customer_id, i.first_name, i.last_name, i.address, i.phone_number, i.email))
                 else:
                     tk.messagebox.showinfo('PyBank', 'No customers found')
-                cls.accounts = Agent.search_account(search_string.get(), cls.result)
+                cls.accounts = util.search_account(search_string.get(), cls.result)
                 if cls.result.code == "00":
                     for i in cls.accounts:
-                        accounts_results.insert(parent='', index='end', values=(i.acc_number, i.acc_type, i.balance, i.transfer_amount, i.transfer_quantity, i.customer_id, i.open_date))
+                        accounts_results.insert(parent='', index='end', values=(i.acc_number, i.acc_type.product_type, i.balance, i.transfer_amount, i.transfer_quantity, i.customer_id, i.open_date))
                 else:
                     tk.messagebox.showinfo('PyBank', 'No accounts found')
             else:
-                tk.messagebox.showinfo('PyBank', 'Input search string')
+                tk.messagebox.showerror('PyBank', 'Input search string')
         def action_customer():
-            area.destroy()
-            cls.view_customer()
+            try:
+                cls.active_customer = cls.customers[int(customers_results.selection()[0][1:])-1]
+                area.destroy()
+                cls.view_customer()
+            except IndexError as e:
+                tkinter.messagebox.showerror('PyBank', 'Select a customer to view')
         def action_account():
             area.destroy()
             cls.view_account()
@@ -148,16 +156,18 @@ class GUI:
         customers_results_label.grid(column=0, row=3, columnspan=10)
         customers_results = ttk.Treeview(area, height=5)
         customers_results.grid(column=0, row=4, columnspan=40, rowspan=5)
-        customers_results['columns'] = ('customer_id', 'customer_full_name', 'customer_address', 'customer_phone', 'customer_email')
+        customers_results['columns'] = ('customer_id', 'customer_first_name', 'customer_last_name', 'customer_address', 'customer_phone', 'customer_email')
         customers_results.column("#0", width=0, stretch=False)
         customers_results.column("customer_id", anchor="center", width=50)
-        customers_results.column("customer_full_name", anchor="center", width=200)
+        customers_results.column("customer_first_name", anchor="center", width=100)
+        customers_results.column("customer_last_name", anchor="center", width=100)
         customers_results.column("customer_address", anchor="center", width=200)
         customers_results.column("customer_phone", anchor="center", width=100)
         customers_results.column("customer_email", anchor="center", width=200)
         customers_results.heading("#0", text="", anchor="center")
         customers_results.heading("customer_id", text="ID", anchor="center")
-        customers_results.heading("customer_full_name", text="NAME", anchor="center")
+        customers_results.heading("customer_first_name", text="NAME", anchor="center")
+        customers_results.heading("customer_last_name", text="NAME", anchor="center")
         customers_results.heading("customer_address", text="ADDRESS", anchor="center")
         customers_results.heading("customer_phone", text="PHONE", anchor="center")
         customers_results.heading("customer_email", text="EMAIL", anchor="center")
@@ -211,27 +221,27 @@ class GUI:
         cls.create_grid_area(area)
         customer_id_label = ttk.Label(area, text="ID")
         customer_id_label.grid(column=0, row=1, columnspan=5)
-        customer_id_text = ttk.Label(area, text="1")
+        customer_id_text = ttk.Label(area, text=cls.active_customer.customer_id)
         customer_id_text.grid(column=0, row=2, columnspan=5)
         customer_first_name_label = ttk.Label(area, text="First name")
         customer_first_name_label.grid(column=5, row=1, columnspan=5)
-        customer_first_name_text = ttk.Label(area, text="Nancy")
+        customer_first_name_text = ttk.Label(area, text=cls.active_customer.first_name)
         customer_first_name_text.grid(column=5, row=2, columnspan=5)
         customer_last_name_label = ttk.Label(area, text="Last name")
         customer_last_name_label.grid(column=10, row=1, columnspan=5)
-        customer_last_name_text = ttk.Label(area, text="Sallings")
+        customer_last_name_text = ttk.Label(area, text=cls.active_customer.last_name)
         customer_last_name_text.grid(column=10, row=2, columnspan=5)
         customer_address_label = ttk.Label(area, text="Address")
         customer_address_label.grid(column=15, row=1, columnspan=5)
-        customer_address_text = ttk.Label(area, text="4291 Derek Road")
+        customer_address_text = ttk.Label(area, text=cls.active_customer.address)
         customer_address_text.grid(column=15, row=2, columnspan=5)
         customer_phone_label = ttk.Label(area, text="Phone")
         customer_phone_label.grid(column=20, row=1, columnspan=5)
-        customer_phone_text = ttk.Label(area, text="4168878442")
+        customer_phone_text = ttk.Label(area, text=cls.active_customer.phone_number)
         customer_phone_text.grid(column=20, row=2, columnspan=5)
         customer_email_label = ttk.Label(area, text="Email")
         customer_email_label.grid(column=25, row=1, columnspan=10)
-        customer_email_text = ttk.Label(area, text="nsallings0@prnewswire.com")
+        customer_email_text = ttk.Label(area, text=cls.active_customer.email)
         customer_email_text.grid(column=25, row=2, columnspan=10)
         customer_accounts_label = ttk.Label(area, text="Customer accounts")
         customer_accounts_label.grid(column=0, row=5, columnspan=10)
@@ -250,7 +260,6 @@ class GUI:
         customer_accounts.heading("account_balance", text="BALANCE", anchor="center")
         customer_accounts.heading("account_transfer_amount", text="TRANSFERRED", anchor="center")
         customer_accounts.heading("account_transfer_quantity", text="TRANSFERS", anchor="center")
-        #customer_accounts.insert(parent='', index='end', values=('109970001', 'Checking', '$100', '$0', '0'))
         accounts_results_button = ttk.Button(area, width=20, text="View account", command=action_account)
         accounts_results_button.grid(column=40, row=6, columnspan=8, rowspan=5)
         open_account_button = ttk.Button(area, width=20, text="Update customer", command=action_update_customer)
@@ -259,6 +268,12 @@ class GUI:
         open_account_button.grid(column=40, row=2, columnspan=8)
         open_account_button = ttk.Button(area, width=20, text="Open account", command=action_open_account)
         open_account_button.grid(column=40, row=3, columnspan=8)
+        cls.accounts = util.view_customer(cls.active_customer.customer_id, cls.result)
+        if cls.result.code == "00":
+            for i in cls.accounts:
+                customer_accounts.insert(parent='', index='end', values=(i.acc_number, i.acc_type.product_type, i.balance, i.transfer_amount, i.transfer_quantity, i.customer_id, i.open_date))
+        else:
+            tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
 
     @classmethod
     def new_customer(cls):
@@ -278,9 +293,9 @@ class GUI:
                     area.destroy()
                     cls.view_customer()
                 else:
-                    tk.messagebox.showinfo('PyBank', cls.result.code + " - " + cls.result.message)
+                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
             else:
-                tk.messagebox.showinfo('PyBank', 'All fields are required')
+                tk.messagebox.showerror('PyBank', 'All fields are required')
         def action_cancel():
             area.destroy()
             cls.search()
@@ -331,15 +346,15 @@ class GUI:
     def update_customer(cls):
         def action_confirm():
             if customer_pin.get() != "" and customer_first_name.get() != "" and customer_last_name.get() != "" and customer_address.get() != "" and customer_phone.get() != "" and customer_email.get() != "":
-                cls.active_agent.update_customer(cls.active_customer, cls.result)
+                util.update_customer(cls.active_customer, cls.result)
                 if cls.result.code == "00":
                     tk.messagebox.showinfo('PyBank', 'Customer ' + cls.active_customer.customer_id + ' updated')
                     area.destroy()
                     cls.view_customer()
                 else:
-                    tk.messagebox.showinfo('PyBank', cls.result.code + " - " + cls.result.message)
+                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
             else:
-                tk.messagebox.showinfo('PyBank', 'All fields are required')
+                tk.messagebox.showerror('PyBank', 'All fields are required')
         def action_cancel():
             area.destroy()
             cls.view_customer()
@@ -560,9 +575,17 @@ class GUI:
     @classmethod
     def open_account(cls):
         def action_confirm():
-            tk.messagebox.showinfo('PyBank', 'Account opened')
-            area.destroy()
-            cls.view_account()
+            cls.active_account = Account(account_type.get())
+            cls.active_account.customer_id = cls.active_customer.customer_id
+            cls.active_account.open_date = datetime.now()
+            cls.active_account.agent_id = cls.active_agent.username
+            util.open_account(cls.active_account, cls.result)
+            if cls.result.code == "00":
+                tk.messagebox.showinfo('PyBank', 'Account ' + cls.active_account.acc_number + ' opened')
+                area.destroy()
+                cls.view_account()
+            else:
+                tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
         def action_cancel():
             area.destroy()
             cls.view_customer()
@@ -603,7 +626,7 @@ class GUI:
         account_type_values = ["Checking", "Saving", "Investing"]
         account_type = tk.IntVar()
         for i in range(3):
-            account_type_radio = tk.Radiobutton(account_type_frame, text=account_type_values[i], variable=account_type, value=i)
+            account_type_radio = tk.Radiobutton(account_type_frame, text=account_type_values[i], variable=account_type, value=i+1)
             account_type_radio.grid(column=0, row=i)
         interest_label = ttk.Label(area, text="Interest rate")
         interest_label.grid(column=10, row=5, columnspan=5)
