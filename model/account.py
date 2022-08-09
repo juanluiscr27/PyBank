@@ -14,7 +14,7 @@ class Account:
     customer_id: int
     open_date: datetime
     agent_id: str
-    acc_type: Product = field(init=False)  # :Product TODO
+    acc_type: Product = field(init=False)
 
     def __post_init__(self):
         self.acc_type = Product(self.acc_type_id)

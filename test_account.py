@@ -52,4 +52,7 @@ def test_change_account_type():
 
 def test_delete_account():
     result = Return()
-    # TODO
+    acc_number = "350715313"
+    accounts = util.search_account(acc_number, result)
+    bank_account = accounts[0]
+    util.delete_account(bank_account, result)
