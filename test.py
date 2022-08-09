@@ -49,7 +49,7 @@ def test():
     """ Test Customer Model """
     # tc.test_view_customer()
     # tc.test_update_customer()
-    tc.test_delete_customer()
+    # tc.test_delete_customer()
 
     """ Test Account Model """
     # tac.test_view_account()

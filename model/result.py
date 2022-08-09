@@ -28,5 +28,5 @@ class Return:
 
     def set_code(self, new_code: str):
         self.code = new_code
-        self.cause = self.error_table[new_code]
-        self.message = self.error_table[new_code]
+        self.cause = self.error_table[new_code][0]
+        self.message = self.error_table[new_code][1]

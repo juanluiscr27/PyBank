@@ -126,7 +126,7 @@ def search_account(search_string: str, account_result: list, result: Return):
             # print("Connection successful")
             query = "SELECT acc_number, acc_type, balance, transfer_amount, transfer_quantity, " \
                     "customer_id, open_date, agent_id FROM accounts " \
-                    "  WHERE LOWER(acc_number) LIKE %(search_string)s "
+                    "  WHERE acc_number LIKE %(search_string)s "
             cursor = conn.cursor()
 
             # Query scape parameters

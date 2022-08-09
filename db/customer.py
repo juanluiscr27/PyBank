@@ -96,7 +96,7 @@ def update_customer(bank_customer, result: Return):
             conn.close()
 
 
-def delete_customer(bank_customer, delete_date: str, result: Return):
+def delete_customer(bank_customer, agent_id: str, delete_date: str, result: Return):
     conn = None
     # Request a database connection from the pool
     try:
@@ -118,7 +118,7 @@ def delete_customer(bank_customer, delete_date: str, result: Return):
                 'last_name': bank_customer.last_name,
                 'creation_date': bank_customer.creation_date,
                 'delete_date': delete_date,
-                'agent_id': bank_customer.agent_id
+                'agent_id': agent_id
             }
             cursor.execute(insert_query, customer_info)
 
