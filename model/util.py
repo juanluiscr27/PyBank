@@ -119,6 +119,7 @@ def update_customer(active_customer, result):
 
 
 def delete_customer(active_customer, result):
+    """ Delete customer """
     if len(view_customer(active_customer.customer_id, result)) > 0:
         result.set_code("04")
         print(result.message)
