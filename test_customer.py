@@ -6,6 +6,7 @@ from datetime import datetime
 
 from model.customer import Customer
 from model.result import Return
+from model import util
 
 
 print("* Tests for Customer Model *")
@@ -16,7 +17,7 @@ def test_view_customer():
     result = Return()
     customer_id = 11
 
-    customer_view = Customer.view_customer(customer_id, result)
+    customer_view = util.view_customer(customer_id, result)
     print(customer_view)
 
 
@@ -25,7 +26,7 @@ def test_update_customer():
     active_customer = Customer(
         customer_id=11,
         pin="1234",
-        first_name="Juan Luis",
+        first_name="Juan",
         last_name="Casanova",
         address="Bentley",
         phone_number="9876543210",
@@ -34,7 +35,7 @@ def test_update_customer():
         agent_id='jmisk5'
     )
 
-    Customer.update_customer(active_customer, result)
+    util.update_customer(active_customer, result)
 
 
 def test_delete_customer():
@@ -52,4 +53,4 @@ def test_delete_customer():
         agent_id='jmisk5'
     )
 
-    Customer.delete_customer(active_customer, result)
+    util.delete_customer(active_customer, result)

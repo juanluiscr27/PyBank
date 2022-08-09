@@ -4,35 +4,52 @@ CSAM   Group 02   2022S
 """
 from datetime import datetime
 
-from model.customer import Customer
+from model import util
+from model.account import Account
 from model.result import Return
 
 
 print("* Tests for Account Model *")
 
 
-# Test 1: View Customer
-def test_view_acc_num():
-    result = Return()
-    customer_id = 11
-
-    customer_view = Customer.view_customer(customer_id, result)
-    print(customer_view)
-
-
+# Test 1: View Account
 def test_view_account():
     result = Return()
-    active_customer = Customer(
-        customer_id=11,
-        pin="1234",
-        first_name="Juan Luis",
-        last_name="Casanova",
-        address="Bentley",
-        phone_number="9876543210",
-        email="juan@email.com",
-        creation_date=datetime.now(),
-        agent_id='jmisk5'
+    acc_number = "937850261"
+    account_view = util.view_account(acc_number, result)
+    print(account_view)
+
+
+def test_update_account():
+    result = Return()
+    customer_account = Account(
+        acc_number="350715313",
+        acc_type_id=1,
+        balance=0,
+        transfer_amount=0,
+        transfer_quantity=0,
+        customer_id=12,
+        open_date=datetime.now(),
+        agent_id="jmisk5"
     )
+    util.update_account(customer_account, result)
 
-    Customer.update_customer(active_customer, result)
 
+def test_change_account_type():
+    result = Return()
+    customer_account = Account(
+        acc_number="350715313",
+        acc_type_id=3,
+        balance=0,
+        transfer_amount=0,
+        transfer_quantity=0,
+        customer_id=12,
+        open_date=datetime.now(),
+        agent_id="jmisk5"
+    )
+    util.change_account_type(customer_account, result)
+
+
+def test_delete_account():
+    result = Return()
+    # TODO
