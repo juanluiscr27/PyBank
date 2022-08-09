@@ -9,7 +9,7 @@ from db.database_conn import ConnectionPool
 # import test_agent as ta
 
 # IMPORTS FOR TEST CUSTOMER
-# import test_customer as tc
+import test_customer as tc
 
 # IMPORTS FOR TEST ACCOUNT
 # import test_account as tac
@@ -49,16 +49,19 @@ def test():
     """ Test Customer Model """
     # tc.test_view_customer()
     # tc.test_update_customer()
-    # tc.test_delete_customer() TODO
+    tc.test_delete_customer()
 
     """ Test Account Model """
     # tac.test_view_account()
     # tac.test_update_account()
     # tac.test_change_account_type()
-    # tac.test_delete_account() TODO
+    # tac.test_delete_account()
 
     """ Test Movement Model """
     # tm.test_create_transaction()
+    # tm.test_deposit()
+    # tm.test_withdrawal()
+    # tm.test_transfer()
 
 
 # Start the program

@@ -17,16 +17,16 @@ transactions = {
 
 @dataclass(kw_only=True, slots=True)
 class Movement:
-    movement_id: int
-    source_account: str
-    destination_account: str
-    amount: int
-    previous_balance: int
-    new_balance: int
-    movement_date: datetime
     transaction_id: int
+    movement_id: int = 0
+    source_account: str = ""
+    destination_account: str = ""
+    amount: int = 0
+    previous_balance: int = 0
+    new_balance: int = 0
+    movement_date: datetime = None
     description: str = field(init=False)
-    agent_id: str
+    agent_id: str = ""
 
     def __post_init__(self):
         self.description = transactions[self.transaction_id][0]

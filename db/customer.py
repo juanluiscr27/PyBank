@@ -25,22 +25,22 @@ def view_customer(customer_id, customer_accounts: list, result: Return):
             }
 
             cursor.execute(query, customer_info)
-            row = cursor.fetchone()
+            result_set = cursor.fetchall()
             if cursor.rowcount > 0:
                 # Unpack row fields from the result
-                (acc_number, acc_type, product_type, balance, transfer_amount, transfer_quantity,
-                 customer_id, open_date, agent_id) = row
-                bank_account = Account(
-                    acc_number=acc_number,
-                    acc_type_id=acc_type,
-                    balance=balance,
-                    transfer_amount=transfer_amount,
-                    transfer_quantity=transfer_quantity,
-                    customer_id=customer_id,
-                    open_date=open_date,
-                    agent_id=agent_id
-                )
-                customer_accounts.append(bank_account)
+                for (acc_number, acc_type, product_type, balance, transfer_amount, transfer_quantity,
+                     customer_id, open_date, agent_id) in result_set:
+                    bank_account = Account(
+                        acc_number=acc_number,
+                        acc_type_id=acc_type,
+                        balance=balance,
+                        transfer_amount=transfer_amount,
+                        transfer_quantity=transfer_quantity,
+                        customer_id=customer_id,
+                        open_date=open_date,
+                        agent_id=agent_id
+                    )
+                    customer_accounts.append(bank_account)
 
                 result.set_code("00")
 

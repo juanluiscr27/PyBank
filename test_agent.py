@@ -36,6 +36,7 @@ def test_agent_login():
 def test_search_customers():
     result = Return()
     customers = util.search_customer("Nan", result)
+    print(customers)
     print("Len: ", len(customers))
     print("Code: ", result.code)
 

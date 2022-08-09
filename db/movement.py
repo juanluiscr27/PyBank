@@ -14,9 +14,9 @@ def create_transaction(active_movement, result: Return):
             # print("Connection successful")
             query = "INSERT INTO movements  " \
                     "(source_account, destination_account, amount, prev_balance, " \
-                    " new_balance, creation_date, transaction_id, agent_id) " \
+                    " new_balance, movement_date, transaction_id, agent_id) " \
                     "VALUES (%(source_account)s, %(destination_account)s, %(amount)s, " \
-                    " %(prev_balance)s, %(new_balance)s, %(creation_date)s, " \
+                    " %(prev_balance)s, %(new_balance)s, %(movement_date)s, " \
                     " %(transaction_id)s, %(agent_id)s)"
             cursor = conn.cursor()
 
@@ -25,9 +25,9 @@ def create_transaction(active_movement, result: Return):
                 'source_account': active_movement.source_account,
                 'destination_account': active_movement.destination_account,
                 'amount': active_movement.amount,
-                'prev_balance': active_movement.prev_balance,
+                'prev_balance': active_movement.previous_balance,
                 'new_balance': active_movement.new_balance,
-                'creation_date': active_movement.creation_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'movement_date': active_movement.movement_date.strftime('%Y-%m-%d %H:%M:%S'),
                 'transaction_id': active_movement.transaction_id,
                 'agent_id': active_movement.agent_id
             }

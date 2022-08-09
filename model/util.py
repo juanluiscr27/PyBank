@@ -95,11 +95,12 @@ def change_account_type(bank_account, result):
 
 def delete_account(bank_account, result):
     """ Search bank account based on an account number """
-    delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    # TODO
-    # account.delete_account(bank_account, delete_date, result)
-    if result.code == "00":
-        print(bank_account)
+    if bank_account.balance > 0:
+        delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        account.delete_account(bank_account, delete_date, result)
+    else:
+        result.set_code("05")
+        print(result.message)
 
 
 """ CUSTOMER FUNCTIONS """
@@ -118,79 +119,77 @@ def update_customer(active_customer, result):
 
 
 def delete_customer(active_customer, result):
-    delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    """ Delete customer """
     if len(view_customer(active_customer.customer_id, result)) > 0:
         result.set_code("04")
         print(result.message)
     else:
-        # TODO
-        pass
-        # customer.delete_customer(active_customer, delete_date, result)
+        delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        customer.delete_customer(active_customer, delete_date, result)
 
 
 """ MOVEMENTS FUNCTIONS """
 
 
-def deposit(active_movement, active_account, active_agent, result):
+def deposit(active_movement, active_account, result):
     """ Deposit money into a bank account """
-    # TODO
-    active_movement.amount -= active_movement.get_transaction_fee
+    fee = active_movement.get_transaction_fee()
     active_movement.previous_balance = active_account.balance
-    active_movement.new_balance = active_account.balance + active_movement.amount
+    active_movement.new_balance = active_account.balance + active_movement.amount - fee
     active_account.balance = active_movement.new_balance
     movement.create_transaction(active_movement, result)
-    # account.update_account(bank_account, result)
-
     if result.code == "00":
-        print("Deposit Successful")
+        account.update_account(active_account, result)
+        # print("Deposit Successful")
 
 
-def withdrawal(active_movement, active_account, active_agent, result):
+def withdrawal(active_movement, active_account, result):
     """ Withdraw money from a bank account """
-    # TODO
-
-    active_movement.amount -= active_movement.get_transaction_fee
+    fee = active_movement.get_transaction_fee()
     active_movement.previous_balance = active_account.balance
-    active_movement.new_balance = active_account.balance + active_movement.amount
+    active_movement.new_balance = active_account.balance - active_movement.amount - fee
     if active_movement.new_balance < active_account.acc_type.minimum_balance:
         result.set_code("06")
-
-    elif result.code == "00":
-        active_account.transfer_mount += active_movement.amount
+        # print(result.message)
+    else:
+        active_account.transfer_amount += active_movement.amount
         active_account.transfer_quantity = active_account.transfer_quantity + 1
         active_account.balance = active_movement.new_balance
+        movement.create_transaction(active_movement, result)
+        if result.code == "00":
+            account.update_account(active_account, result)
+            print("Withdrawal Successful")
 
-        # movement.create_transaction(active_movement, result)
-        # account.update_account(bank_account, result)
-    if result.code == "00":
-        print("Withdrawal Successful")
 
-
-def transfer(active_movement, active_account, destination_account, active_agent, result):
+def transfer(active_movement, active_account, destination_acc_number, result):
     """ Transfer money from a bank account to another account """
-    # TODO
+    account_result = []
     active_product = active_account.acc_type
-    agent.search_account(destination_account, active_agent, result)
-    active_movement.destination_account = destination_account.acc_number
+    agent.search_account(destination_acc_number, account_result, result)
 
-    active_movement.amount -= active_movement.get_transaction_fee
-    active_movement.previous_balance = active_account.balance
-    active_movement.new_balance = active_account.balance + active_movement.amount
-    if active_movement.new_balance < active_product.minimum_balance:
-        result.set_code("06")
-    elif active_account.transfer_quantity > active_product.minimum_balance:
-        result.set_code("07")
-    elif active_account.transfer_quantity > active_product.amount_limit:
-        result.set_code("07")
-
-    elif active_account.transfer_amount + active_movement.amount > active_product.amount_limit:
-        result.set_code("08")
-    elif result.code == "00":
-        active_account.transfer_mount += active_movement.amount
-        active_account.transfer_quantity = active_account.transfer_quantity + 1
-        active_account.balance = active_movement.new_balance
-        # movement.create_transaction(active_movement, result)
-        account.update_account(active_account, result)
-
-    if result.code == "00":
-        print("Transfer Successful")
+    if account_result:
+        destination_account = account_result[0]
+        active_movement.destination_account = destination_account.acc_number
+        fee = active_movement.get_transaction_fee()
+        active_movement.previous_balance = active_account.balance
+        active_movement.new_balance = active_account.balance - active_movement.amount - fee
+        if active_movement.new_balance < active_product.minimum_balance:
+            result.set_code("06")
+        elif active_account.transfer_quantity + 1 > active_product.quantity_limit:
+            result.set_code("07")
+        elif active_account.transfer_amount + active_movement.amount > active_product.amount_limit:
+            result.set_code("08")
+        else:
+            active_account.transfer_amount += active_movement.amount
+            active_account.transfer_quantity = active_account.transfer_quantity + 1
+            active_account.balance = active_movement.new_balance
+            movement.create_transaction(active_movement, result)
+            if result.code == "00":
+                account.update_account(active_account, result)
+                destination_account.balance += active_movement.amount
+                account.update_account(destination_account, result)
+                if result.code == "00":
+                    print("Transfer Successful")
+    else:
+        result.set_code("09")
+        print(result.message)
