@@ -21,7 +21,7 @@ class ConnectionPool:
 
         :param, kwargs: a key word argument with the value of the pool parameters
         """
-        print('Creating connection pool...')
+        # print('Creating connection pool...')
         try:
             cls._conn_pool = pooling.MySQLConnectionPool(
                 pool_name=kwargs['pool_name'],
@@ -33,7 +33,7 @@ class ConnectionPool:
                 database=kwargs['database']
             )
 
-            print('Connection pool created')
+            # print('Connection pool created')
         except errors.Error as e:
             print(f'{e.errno}: {e.msg}')
             print('Connection pool could not be created')
@@ -44,7 +44,7 @@ class ConnectionPool:
         try:
             # fetch a connection from the pool
             cls._conn = cls._conn_pool.get_connection()
-            print('Connected to the database')
+            # print('Connected to the database')
 
         except errors.PoolError as pe:
             # connection pool exhausted
