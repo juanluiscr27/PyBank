@@ -2,7 +2,7 @@ from datetime import datetime
 from random import randint
 
 from db import agent, account, customer, movement
-
+from model.movement import Movement
 
 """ AGENT FUNCTIONS """
 
@@ -93,14 +93,32 @@ def change_account_type(bank_account, result):
         print(bank_account)
 
 
-def delete_account(bank_account, result):
-    """ Search bank account based on an account number """
+def delete_account(active_agent, bank_account, result):
+    """ Delete bank account """
+    result.set_code("00")
+
     if bank_account.balance > 0:
-        delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        account.delete_account(bank_account, delete_date, result)
-    else:
-        result.set_code("05")
-        print(result.message)
+        closing_movement = Movement(
+            movement_id=0,
+            source_account=bank_account.acc_number,
+            destination_account="",
+            amount=bank_account.balance,
+            previous_balance=bank_account.balance,
+            new_balance=0,
+            movement_date=datetime.now(),
+            transaction_id=6,
+            agent_id=active_agent.username
+        )
+
+        bank_account.transfer_amount += closing_movement.amount
+        bank_account.transfer_quantity = bank_account.transfer_quantity + 1
+        bank_account.balance = closing_movement.new_balance
+        movement.create_transaction(closing_movement, result)
+        if result.code == "00":
+            account.update_account(bank_account, result)
+
+    delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    account.delete_account(bank_account, active_agent.username, delete_date, result)
 
 
 """ CUSTOMER FUNCTIONS """
@@ -118,14 +136,14 @@ def update_customer(active_customer, result):
     customer.update_customer(active_customer, result)
 
 
-def delete_customer(active_customer, result):
+def delete_customer(active_agent, active_customer, result):
     """ Delete customer """
-    if len(view_customer(active_customer.customer_id, result)) > 0:
+    if view_customer(active_customer.customer_id, result):
         result.set_code("04")
         print(result.message)
     else:
         delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        customer.delete_customer(active_customer, delete_date, result)
+        customer.delete_customer(active_customer, active_agent.username, delete_date, result)
 
 
 """ MOVEMENTS FUNCTIONS """

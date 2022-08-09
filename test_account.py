@@ -6,6 +6,7 @@ from datetime import datetime
 
 from model import util
 from model.account import Account
+from model.agent import Agent
 from model.result import Return
 
 
@@ -52,7 +53,14 @@ def test_change_account_type():
 
 def test_delete_account():
     result = Return()
-    acc_number = "350715313"
+    active_agent = Agent(
+        username='fbampkin2',
+        password='Kd2wvlc',
+        first_name='Feliks',
+        last_name='Bampkin',
+        position_id=3
+    )
+    acc_number = "371882838"
     accounts = util.search_account(acc_number, result)
     bank_account = accounts[0]
-    util.delete_account(bank_account, result)
+    util.delete_account(active_agent, bank_account, result)

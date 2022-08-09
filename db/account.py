@@ -175,7 +175,7 @@ def change_account_type(bank_account, result: Return):
             conn.close()
 
 
-def delete_account(bank_account, delete_date: str, result: Return):
+def delete_account(bank_account, agent_id: str, delete_date: str, result: Return):
     conn = None
     # Request a database connection from the pool
     try:
@@ -183,10 +183,10 @@ def delete_account(bank_account, delete_date: str, result: Return):
 
         if conn.is_connected():
             # print("Connection successful")
-            insert_query = "INSERT INTO account_hist " \
+            insert_query = "INSERT INTO accounts_hist " \
                            " (acc_number, acc_type, customer_id, open_date, close_date, agent_id) " \
-                           "VALUES (%(customer_id)s, %(first_name)s, %(last_name)s, " \
-                           " %(creation_date)s, %(delete_date)s, %(agent_id)s) "
+                           "VALUES (%(acc_number)s, %(acc_type)s, %(customer_id)s, " \
+                           " %(open_date)s, %(delete_date)s, %(agent_id)s) "
 
             cursor = conn.cursor()
 
@@ -197,7 +197,7 @@ def delete_account(bank_account, delete_date: str, result: Return):
                 'customer_id': bank_account.customer_id,
                 'open_date': bank_account.open_date,
                 'delete_date': delete_date,
-                'agent_id': bank_account.agent_id
+                'agent_id': agent_id
             }
             cursor.execute(insert_query, account_info)
 

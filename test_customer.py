@@ -4,6 +4,7 @@ CSAM   Group 02   2022S
 """
 from datetime import datetime
 
+from model.agent import Agent
 from model.customer import Customer
 from model.result import Return
 from model import util
@@ -39,10 +40,16 @@ def test_update_customer():
 
 
 def test_delete_customer():
-    # TODO
     result = Return()
+    active_agent = Agent(
+        username='fbampkin2',
+        password='Kd2wvlc',
+        first_name='Feliks',
+        last_name='Bampkin',
+        position_id=3
+    )
     active_customer = Customer(
-        customer_id=11,
+        customer_id=16,
         pin="1234",
         first_name="Juan Luis",
         last_name="Casanova",
@@ -53,4 +60,4 @@ def test_delete_customer():
         agent_id='jmisk5'
     )
 
-    util.delete_customer(active_customer, result)
+    util.delete_customer(active_agent, active_customer, result)
