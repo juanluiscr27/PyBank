@@ -33,6 +33,7 @@ def search_account(search_string, result):
 
 def create_customer(new_customer, result):
     """ Create a new bank customer """
+    new_customer.creation_date = datetime.now()
     agent.create_customer(new_customer, result)
 
 
@@ -170,6 +171,7 @@ def deposit(active_movement, active_account, result):
     active_movement.previous_balance = active_account.balance
     active_movement.new_balance = active_account.balance + active_movement.amount - fee
     active_account.balance = active_movement.new_balance
+    active_account.movement_date = datetime.now()
     movement.create_transaction(active_movement, result)
     if result.code == "00":
         account.update_account(active_account, result)
@@ -182,6 +184,7 @@ def withdrawal(active_movement, active_account, result):
     fee = active_movement.get_transaction_fee()
     active_movement.previous_balance = active_account.balance
     active_movement.new_balance = active_account.balance - active_movement.amount - fee
+    active_account.movement_date = datetime.now()
     if active_movement.new_balance < active_account.acc_type.minimum_balance:
         result.set_code("06")
         # print(result.message)
@@ -208,6 +211,7 @@ def transfer(active_movement, active_account, result):
         fee = active_movement.get_transaction_fee()
         active_movement.previous_balance = active_account.balance
         active_movement.new_balance = active_account.balance - active_movement.amount - fee
+        active_account.movement_date = datetime.now()
         if active_movement.new_balance < active_product.minimum_balance:
             result.set_code("06")
         elif active_account.transfer_quantity + 1 > active_product.quantity_limit:
