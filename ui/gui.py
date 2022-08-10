@@ -143,6 +143,7 @@ class GUI:
         def action_account():
             try:
                 cls.active_account = cls.accounts[int(accounts_results.selection()[0][1:], 16)-1]
+                cls.active_customer = cls.active_account.customer
                 area.destroy()
                 cls.view_account()
             except IndexError as e:
@@ -308,7 +309,6 @@ class GUI:
                 cls.active_customer.address=customer_address.get()
                 cls.active_customer.phone_number=customer_phone.get()
                 cls.active_customer.email=customer_email.get()
-                cls.active_customer.creation_date=datetime.now()
                 cls.active_customer.agent_id=cls.active_agent.username
                 util.create_customer(cls.active_customer, cls.result)
                 if cls.result.code == "00":
@@ -432,7 +432,7 @@ class GUI:
         def action_confirm():
             util.delete_customer(cls.active_agent, cls.active_customer, cls.result)
             if cls.result.code == "00":
-                tk.messagebox.showinfo('PyBank', 'Customer ' + cls.active_customer.customer_id + ' deleted')
+                tk.messagebox.showinfo('PyBank', 'Customer ' + str(cls.active_customer.customer_id) + ' deleted')
                 area.destroy()
                 cls.search()
             else:
@@ -657,13 +657,19 @@ class GUI:
     @classmethod
     def close_account(cls):
         def action_confirm():
+            temp_balance = str(cls.active_account.balance)
             util.delete_account(cls.active_agent, cls.active_account, cls.result)
             if cls.result.code == "00":
                 tk.messagebox.showinfo('PyBank', 'Account ' + cls.active_account.acc_number + ' closed')
                 area.destroy()
                 cls.view_customer()
             else:
-                tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                if cls.result.code == "05":
+                    tk.messagebox.showinfo('PyBank', 'Account ' + cls.active_account.acc_number + ' closed\nCash refunded: $' + temp_balance)
+                    area.destroy()
+                    cls.view_customer()
+                else:
+                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
         def action_cancel():
             area.destroy()
             cls.view_account()
