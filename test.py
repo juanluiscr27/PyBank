@@ -2,20 +2,22 @@
 CSD 4523 - Python II
 CSAM   Group 02   2022S
 """
-from datetime import datetime
+
 
 from db.database_conn import ConnectionPool
+
+
 # IMPORTS FOR TEST AGENT
-# import test_agent as ta
+import test_agent as ta
 
 # IMPORTS FOR TEST CUSTOMER
 import test_customer as tc
 
 # IMPORTS FOR TEST ACCOUNT
-# import test_account as tac
+import test_account as tac
 
 # IMPORTS FOR TEST ACCOUNT
-# import test_movement as tm
+import test_movement as tm
 
 # Database Configuration
 config = {
@@ -43,8 +45,9 @@ def test():
     # ta.test_search_customers()
     # ta.test_search_accounts()
     # ta.test_create_customer()
-    # ta.test_search_products()
     # ta.test_open_account()
+    # ta.test_search_products()
+    # ta.test_get_transactions()
 
     """ Test Customer Model """
     # tc.test_view_customer()

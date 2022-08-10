@@ -12,14 +12,17 @@ def get_product_type():
 
         if conn.is_connected():
             # print("Connection successful")
-            query = "SELECT product_id, product_type " \
+            query = "SELECT product_id, product_type, interest_rate, " \
+                    "  amount_limit, quantity_limit, minimum_balance " \
                     "  FROM products " \
                     "  ORDER BY product_id "
             cursor = conn.cursor()
 
             cursor.execute(query)
-            for product_id, product_type in cursor:
-                products_type[product_id] = product_type
+            for (product_id, product_type, interest_rate, amount_limit, quantity_limit,
+                 minimum_balance) in cursor:
+                products_type[product_id] = [product_type, interest_rate, amount_limit,
+                                             quantity_limit, minimum_balance]
 
             cursor.close()
         return products_type

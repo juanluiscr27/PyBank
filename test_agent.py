@@ -4,6 +4,7 @@ CSAM   Group 02   2022S
 """
 from datetime import datetime
 
+from db.movement import get_transactions
 from db.product import get_product_type
 from model import util
 from model.account import Account
@@ -21,11 +22,10 @@ config = {
     'pool_size': 1
 }
 
-print("* Tests for Agent Model *")
-
 
 # Test 2: Login Agent
 def test_agent_login():
+    print("* Tests for Agent Model *")
     active_agent = Agent()
     result = Return()
     active_agent.login("fboxe0", "ua8w6WmM", result)
@@ -66,13 +66,7 @@ def test_create_customer():
     util.create_customer(new_customer, result)
 
 
-# Test 6: Search Products
-def test_search_products():
-    products = get_product_type()
-    print(products)
-
-
-# Test 7: Create Account """
+# Test 6: Create Account """
 def test_open_account():
     result = Return()
     new_account = Account(
@@ -86,3 +80,15 @@ def test_open_account():
         agent_id="jmisk5"
     )
     util.open_account(new_account, result)
+
+
+# Test 7: Search Products
+def test_search_products():
+    products = get_product_type()
+    print(products)
+
+
+# Test 8: Search Transactions
+def test_get_transactions():
+    transactions = get_transactions()
+    print(transactions)

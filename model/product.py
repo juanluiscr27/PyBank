@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 products = {
     1: ['Checking', 0.009, 10000, 20, -5000],
     2: ['Saving', 0.012, 6000, 10, 100],
-    3: ['Inventing', 0.05, 0, 0, 1000]
+    3: ['Investing', 0.05, 0, 0, 1000]
 }
 
 

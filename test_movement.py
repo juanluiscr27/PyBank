@@ -10,11 +10,10 @@ from model.movement import Movement
 from model import util
 from db import movement
 
-print("* Tests for Account Model *")
-
 
 # Test 1: View Account
 def test_create_transaction():
+    print("* Tests for Account Model *")
     acc_number = "371882838"
     result = Return()
     account = util.search_account(acc_number, result)
@@ -89,7 +88,6 @@ def test_withdrawal():
 
 def test_transfer():
     result = Return()
-    destination_acc_number = "350715313"
     active_movement = Movement(
         movement_id=0,
         source_account="371882838",
@@ -112,4 +110,4 @@ def test_transfer():
         open_date=datetime.now(),
         agent_id="jmisk5"
     )
-    util.transfer(active_movement, active_account, destination_acc_number, result)
+    util.transfer(active_movement, active_account, result)

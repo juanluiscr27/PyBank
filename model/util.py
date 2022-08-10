@@ -11,6 +11,7 @@ def search_customer(search_string, result):
     """ Search bank customers who match de provided search string.
         Return a list of customers who satisfy the search criteria. """
     customers_result = []
+    result.set_code("99")
     agent.search_customer(search_string, customers_result, result)
     if result.code == "00":
         return customers_result
@@ -22,6 +23,7 @@ def search_account(search_string, result):
     """ Search bank accounts who match de provided search string.
         Return a list of accounts who satisfy the search criteria. """
     account_result = []
+    result.set_code("99")
     agent.search_account(search_string, account_result, result)
     if result.code == "00":
         return account_result
@@ -36,9 +38,10 @@ def create_customer(new_customer, result):
 
 def open_account(new_account, result):
     """ Create a new bank account """
-    acc_number = generate_acc_num(1, result)
+    result.set_code("99")
+    acc_number = generate_acc_num(new_account.acc_type_id, result)
     new_account.acc_number = acc_number
-    print(new_account)
+    # print(new_account)
     agent.open_account(new_account, result)
 
 
@@ -62,6 +65,7 @@ def get_new_acc_num(acc_type_id: int):
 def generate_acc_num(acc_type_id: int, result):
     """ Create a random bank account number different to the existing ones """
     account_numbers = []
+    result.set_code("99")
     account.view_acc_numbers(account_numbers, result)
 
     acc_number = get_new_acc_num(acc_type_id)
@@ -74,6 +78,7 @@ def generate_acc_num(acc_type_id: int, result):
 def view_account(acc_number, result):
     """ Search bank account based on an account number """
     account_movements = []
+    result.set_code("99")
     account.view_account(acc_number, account_movements, result)
     if result.code == "00":
         return account_movements
@@ -81,6 +86,7 @@ def view_account(acc_number, result):
 
 def update_account(bank_account, result):
     """ Update bank account based on an account number """
+    result.set_code("99")
     account.update_account(bank_account, result)
     if result.code == "00":
         print(bank_account)
@@ -88,6 +94,7 @@ def update_account(bank_account, result):
 
 def change_account_type(bank_account, result):
     """ Update bank account based on an account number """
+    result.set_code("99")
     account.change_account_type(bank_account, result)
     if result.code == "00":
         print(bank_account)
@@ -95,7 +102,7 @@ def change_account_type(bank_account, result):
 
 def delete_account(active_agent, bank_account, result):
     """ Delete bank account """
-    result.set_code("00")
+    result.set_code("99")
 
     if bank_account.balance > 0:
         closing_movement = Movement(
@@ -116,9 +123,12 @@ def delete_account(active_agent, bank_account, result):
         movement.create_transaction(closing_movement, result)
         if result.code == "00":
             account.update_account(bank_account, result)
-
-    delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    account.delete_account(bank_account, active_agent.username, delete_date, result)
+            delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            account.delete_account(bank_account, active_agent.username, delete_date, result)
+            result.set_code("05")
+    else:
+        delete_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        account.delete_account(bank_account, active_agent.username, delete_date, result)
 
 
 """ CUSTOMER FUNCTIONS """
@@ -126,6 +136,7 @@ def delete_account(active_agent, bank_account, result):
 
 def view_customer(customer_id, result):
     customer_accounts = []
+    result.set_code("99")
     customer.view_customer(customer_id, customer_accounts, result)
 
     if result.code == "00":
@@ -133,11 +144,14 @@ def view_customer(customer_id, result):
 
 
 def update_customer(active_customer, result):
+    """ Update Customer """
+    result.set_code("99")
     customer.update_customer(active_customer, result)
 
 
 def delete_customer(active_agent, active_customer, result):
     """ Delete customer """
+    result.set_code("99")
     if view_customer(active_customer.customer_id, result):
         result.set_code("04")
         print(result.message)
@@ -151,6 +165,7 @@ def delete_customer(active_agent, active_customer, result):
 
 def deposit(active_movement, active_account, result):
     """ Deposit money into a bank account """
+    result.set_code("99")
     fee = active_movement.get_transaction_fee()
     active_movement.previous_balance = active_account.balance
     active_movement.new_balance = active_account.balance + active_movement.amount - fee
@@ -163,6 +178,7 @@ def deposit(active_movement, active_account, result):
 
 def withdrawal(active_movement, active_account, result):
     """ Withdraw money from a bank account """
+    result.set_code("99")
     fee = active_movement.get_transaction_fee()
     active_movement.previous_balance = active_account.balance
     active_movement.new_balance = active_account.balance - active_movement.amount - fee
@@ -179,11 +195,12 @@ def withdrawal(active_movement, active_account, result):
             print("Withdrawal Successful")
 
 
-def transfer(active_movement, active_account, destination_acc_number, result):
+def transfer(active_movement, active_account, result):
     """ Transfer money from a bank account to another account """
     account_result = []
+    result.set_code("99")
     active_product = active_account.acc_type
-    agent.search_account(destination_acc_number, account_result, result)
+    agent.search_account(active_movement.destination_account, account_result, result)
 
     if account_result:
         destination_account = account_result[0]

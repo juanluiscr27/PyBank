@@ -10,16 +10,14 @@ from model.result import Return
 from model import util
 
 
-print("* Tests for Customer Model *")
-
-
 # Test 1: View Customer
 def test_view_customer():
+    print("* Tests for Customer Model *")
     result = Return()
-    customer_id = 11
+    customer_id = 1
 
     customer_view = util.view_customer(customer_id, result)
-    print(customer_view)
+    print(customer_view[0].customer)
 
 
 def test_update_customer():

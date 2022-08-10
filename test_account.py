@@ -10,11 +10,9 @@ from model.agent import Agent
 from model.result import Return
 
 
-print("* Tests for Account Model *")
-
-
 # Test 1: View Account
 def test_view_account():
+    print("* Tests for Account Model *")
     result = Return()
     acc_number = "937850261"
     account_view = util.view_account(acc_number, result)
