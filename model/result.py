@@ -14,7 +14,8 @@ def create_table() -> dict:
                    "08": ["Amount limit exceeded", "Weekly amount exceeded"],
                    "09": ["Destination account not found", "Check destination account"],
                    "10": ["Destination account not valid", "Use transfer own option"],
-                   "11": ["Destination account not valid", "Use transfer others option"]}
+                   "11": ["Destination account not valid", "Use transfer others option"],
+                   "12": ["Account query result set empty", "Customer has no accounts"]}
 
     return error_table
 

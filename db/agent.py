@@ -196,6 +196,7 @@ def create_customer(new_customer: Customer, result: Return):
                 'agent_id': new_customer.agent_id
             }
             cursor.execute(query, customer_info)
+            new_customer.customer_id = cursor.lastrowid
             cursor.close()
 
     except errors.PoolError as pe:

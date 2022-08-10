@@ -33,4 +33,3 @@ class Movement:
 
     def get_transaction_fee(self):
         return transactions[self.transaction_id][1]
-
