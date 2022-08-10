@@ -47,6 +47,7 @@ def test_search_accounts():
     accounts = util.search_account("15", result)
     print("Len: ", len(accounts))
     print("Code: ", result.code)
+    print(accounts)
 
 
 # Test 5: Create Customer

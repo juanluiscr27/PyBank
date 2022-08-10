@@ -127,8 +127,12 @@ def search_account(search_string: str, account_result: list, result: Return):
             query = "SELECT acc_number, acc_type, balance, transfer_amount, transfer_quantity, " \
                     "customer_id, open_date, agent_id FROM accounts " \
                     "  WHERE acc_number LIKE %(search_string)s "
-            cursor = conn.cursor()
+            cursor = conn.cursor(buffered=True)
 
+            cust_query = "SELECT pin, first_name, last_name, address, phone_number, " \
+                         " email, creation_date, agent_id FROM customers " \
+                         " WHERE customer_id = %s"
+            cust_cursor = conn.cursor(buffered=True)
             # Query scape parameters
             account_info = {
                 'search_string': search_string
@@ -151,12 +155,27 @@ def search_account(search_string: str, account_result: list, result: Return):
                         open_date=open_date,
                         agent_id=agent_id
                     )
+                    cust_cursor.execute(cust_query, (customer_id,))
 
+                    for (pin, first_name, last_name, address, phone_number, email, creation_date,
+                         cust_agent_id) in cust_cursor:
+                        bank_customer = Customer(
+                            customer_id=customer_id,
+                            pin=pin,
+                            first_name=first_name,
+                            last_name=last_name,
+                            address=address,
+                            phone_number=phone_number,
+                            email=email,
+                            creation_date=creation_date,
+                            agent_id=cust_agent_id
+                        )
+                        bank_account.customer = bank_customer
                     account_result.append(bank_account)
 
                 result.set_code("00")
             else:
-                result.set_code("01")
+                result.set_code("12")
 
             cursor.close()
 
