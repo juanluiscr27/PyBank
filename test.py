@@ -43,7 +43,7 @@ def test():
     """ Test Agent Model """
     # ta.test_agent_login()
     # ta.test_search_customers()
-    # ta.test_search_accounts()
+    ta.test_search_accounts()
     # ta.test_create_customer()
     # ta.test_open_account()
     # ta.test_search_products()
