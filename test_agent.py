@@ -7,6 +7,7 @@ from datetime import datetime
 from db.movement import get_transactions
 from db.product import get_product_type
 from model import util
+from model.product import ProductList
 from model.account import Account
 from model.agent import Agent
 from model.customer import Customer
@@ -46,8 +47,8 @@ def test_search_accounts():
     result = Return()
     accounts = util.search_account("15", result)
     print("Len: ", len(accounts))
-    print("Code: ", result.code)
     print(accounts)
+    print("Fee: ", accounts[0].acc_type.minimum_balance)
 
 
 # Test 5: Create Customer
@@ -93,3 +94,8 @@ def test_search_products():
 def test_get_transactions():
     transactions = get_transactions()
     print(transactions)
+
+
+# Test 9: Products List
+def test_product_list():
+    print(ProductList.get_list())

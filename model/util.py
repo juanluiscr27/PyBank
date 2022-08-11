@@ -231,4 +231,4 @@ def transfer(active_movement, active_account, result):
                     print("Transfer Successful")
     else:
         result.set_code("09")
-        print(result.message)
+        # print(result.message)

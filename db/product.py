@@ -21,8 +21,8 @@ def get_product_type():
             cursor.execute(query)
             for (product_id, product_type, interest_rate, amount_limit, quantity_limit,
                  minimum_balance) in cursor:
-                products_type[product_id] = [product_type, interest_rate, amount_limit,
-                                             quantity_limit, minimum_balance]
+                products_type[product_id] = [product_type, float(interest_rate), float(amount_limit),
+                                             quantity_limit, float(minimum_balance)]
 
             cursor.close()
         return products_type

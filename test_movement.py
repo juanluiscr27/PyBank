@@ -6,12 +6,19 @@ from datetime import datetime
 
 from model.account import Account
 from model.result import Return
-from model.movement import Movement
+from model.movement import Movement, TransactionList
 from model import util
 from db import movement
 
 
-# Test 1: View Account
+# Test 1: Transactions
+def test_transaction_list():
+    print(TransactionList.get_list())
+    active_movement = Movement(transaction_id=8)
+    print(active_movement)
+    print(active_movement.get_transaction_fee())
+
+
 def test_create_transaction():
     print("* Tests for Account Model *")
     acc_number = "371882838"

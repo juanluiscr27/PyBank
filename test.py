@@ -3,9 +3,9 @@ CSD 4523 - Python II
 CSAM   Group 02   2022S
 """
 
-
 from db.database_conn import ConnectionPool
-
+from model.movement import TransactionList
+from model.product import ProductList
 
 # IMPORTS FOR TEST AGENT
 import test_agent as ta
@@ -38,12 +38,17 @@ config = {
 """ Database Connection """
 ConnectionPool.create_pool(**config)
 
+""" Load Lookup Tables """
+TransactionList.create_list()
+ProductList.create_list()
+
 
 def test():
     """ Test Agent Model """
     # ta.test_agent_login()
     # ta.test_search_customers()
-    ta.test_search_accounts()
+    # ta.test_product_list()
+    # ta.test_search_accounts()
     # ta.test_create_customer()
     # ta.test_open_account()
     # ta.test_search_products()
@@ -61,6 +66,7 @@ def test():
     # tac.test_delete_account()
 
     """ Test Movement Model """
+    # tm.test_transaction_list()
     # tm.test_create_transaction()
     # tm.test_deposit()
     # tm.test_withdrawal()
