@@ -6,6 +6,8 @@ from db.database_conn import ConnectionPool
 import tkinter as tk
 
 from model.agent import Agent
+from model.movement import TransactionList
+from model.product import ProductList
 from model.result import Return
 from ui.gui import *
 
@@ -26,6 +28,10 @@ def main():
     print("* Welcome to PyBank *")
 
     ConnectionPool.create_pool(**config)
+
+    """ Load Lookup Tables """
+    TransactionList.create_list()
+    ProductList.create_list()
 
     main_window = GUI()
 
