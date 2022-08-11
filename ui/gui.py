@@ -1,5 +1,3 @@
-import tkinter.messagebox
-
 from model.product import Product
 from ui import *
 from model import util
@@ -137,9 +135,9 @@ class GUI:
                 cls.view_customer()
             except IndexError as e:
                 if len(customers_results.get_children()) > 0:
-                    tkinter.messagebox.showerror('PyBank', 'Select a customer to view')
+                    tk.messagebox.showerror('PyBank', 'Select a customer to view')
                 else:
-                    tkinter.messagebox.showerror('PyBank', 'No customers to display')
+                    tk.messagebox.showerror('PyBank', 'No customers to display')
         def action_account():
             try:
                 cls.active_account = cls.accounts[int(accounts_results.selection()[0][1:], 16)-1]
@@ -148,9 +146,9 @@ class GUI:
                 cls.view_account()
             except IndexError as e:
                 if len(accounts_results.get_children()) > 0:
-                    tkinter.messagebox.showerror('PyBank', 'Select an account to view')
+                    tk.messagebox.showerror('PyBank', 'Select an account to view')
                 else:
-                    tkinter.messagebox.showerror('PyBank', 'No accounts to display')
+                    tk.messagebox.showerror('PyBank', 'No accounts to display')
         cls.window.geometry(cls.window_size)
         cls.create_top_menu()
         agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
@@ -220,9 +218,9 @@ class GUI:
                 cls.view_account()
             except IndexError as e:
                 if len(customer_accounts.get_children()) > 0:
-                    tkinter.messagebox.showerror('PyBank', 'Select an account to view')
+                    tk.messagebox.showerror('PyBank', 'Select an account to view')
                 else:
-                    tkinter.messagebox.showerror('PyBank', 'No accounts to display')
+                    tk.messagebox.showerror('PyBank', 'No accounts to display')
         def action_open_account():
             area.destroy()
             cls.open_account()
@@ -232,6 +230,18 @@ class GUI:
         def action_delete_customer():
             area.destroy()
             cls.delete_customer()
+        def action_money_chart():
+            try:
+                chart_accounts = []
+                chart_balances = []
+                for i in cls.accounts:
+                    chart_accounts.append(i.acc_type.product_type + "\n" + i.acc_number + "\n$" + str(i.balance))
+                    chart_balances.append(i.balance)
+                    plt.title("Money distribution")
+                    plt.pie(chart_balances, labels=chart_accounts)
+                    plt.show()
+            except TypeError as e:
+                tk.messagebox.showerror('PyBank', 'Customer has no open accounts')
         cls.window.geometry(cls.window_size)
         cls.create_top_menu()
         agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
@@ -289,6 +299,8 @@ class GUI:
         open_account_button.grid(column=40, row=2, columnspan=8)
         open_account_button = ttk.Button(area, width=20, text="Open account", command=action_open_account)
         open_account_button.grid(column=40, row=3, columnspan=8)
+        open_account_button = ttk.Button(area, width=20, text="Money chart", command=action_money_chart)
+        open_account_button.grid(column=40, row=4, columnspan=8)
         cls.accounts = util.view_customer(cls.active_customer.customer_id, cls.result)
         if cls.result.code == "00":
             for i in cls.accounts:
@@ -813,18 +825,21 @@ class GUI:
     @classmethod
     def withdrawal(cls):
         def action_confirm():
-            cls.active_movement.source_account = cls.active_account.acc_number
-            cls.active_movement.destination_account = ""
-            cls.active_movement.amount = amount.get()
-            cls.active_movement.transaction_id = 8
-            cls.active_movement.agent_id = cls.active_agent.username
-            util.withdrawal(cls.active_movement, cls.active_account, cls.result)
-            if cls.result.code == "00":
-                tk.messagebox.showinfo('PyBank', 'Withdrawal successful')
-                area.destroy()
-                cls.view_account()
+            if cls.active_customer.pin == pin.get():
+                cls.active_movement.source_account = cls.active_account.acc_number
+                cls.active_movement.destination_account = ""
+                cls.active_movement.amount = amount.get()
+                cls.active_movement.transaction_id = 8
+                cls.active_movement.agent_id = cls.active_agent.username
+                util.withdrawal(cls.active_movement, cls.active_account, cls.result)
+                if cls.result.code == "00":
+                    tk.messagebox.showinfo('PyBank', 'Withdrawal successful')
+                    area.destroy()
+                    cls.view_account()
+                else:
+                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
             else:
-                tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                tk.messagebox.showerror('PyBank', "PIN incorrect")
         def action_cancel():
             area.destroy()
             cls.view_account()
@@ -898,18 +913,21 @@ class GUI:
     @classmethod
     def transfer(cls):
         def action_confirm():
-            cls.active_movement.source_account = cls.active_account.acc_number
-            cls.active_movement.destination_account = destination.get()
-            cls.active_movement.amount = amount.get()
-            cls.active_movement.transaction_id = 9
-            cls.active_movement.agent_id = cls.active_agent.username
-            util.transfer(cls.active_movement, cls.active_account, cls.result)
-            if cls.result.code == "00":
-                tk.messagebox.showinfo('PyBank', 'Transfer successful')
-                area.destroy()
-                cls.view_account()
+            if cls.active_customer.pin == pin.get():
+                cls.active_movement.source_account = cls.active_account.acc_number
+                cls.active_movement.destination_account = destination.get()
+                cls.active_movement.amount = amount.get()
+                cls.active_movement.transaction_id = 9
+                cls.active_movement.agent_id = cls.active_agent.username
+                util.transfer(cls.active_movement, cls.active_account, cls.result)
+                if cls.result.code == "00":
+                    tk.messagebox.showinfo('PyBank', 'Transfer successful')
+                    area.destroy()
+                    cls.view_account()
+                else:
+                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
             else:
-                tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                tk.messagebox.showerror('PyBank', "PIN incorrect")
         def action_cancel():
             area.destroy()
             cls.view_account()

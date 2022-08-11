@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import scrolledtext
 from tkinter import Menu
 from tkinter import messagebox
+from matplotlib import pyplot as plt
 from datetime import datetime
 
 from model.agent import Agent
