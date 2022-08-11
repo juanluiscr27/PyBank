@@ -1,18 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 
-
-transactions = {
-    1: ['Create customer', 0, 3],
-    2: ['Update customer', 0, 2],
-    3: ['Delete customer', 0, 1],
-    4: ['Opening account', 0, 3],
-    5: ['Change account type', 4, 3],
-    6: ['Close account', 0, 1],
-    7: ['Deposit', 0, 3],
-    8: ['Withdrawal', 2.50, 2],
-    9: ['Funds transfer', 3.50, 2]
-}
+from db.movement import get_transactions
 
 
 @dataclass(kw_only=True, slots=True)
@@ -29,7 +18,20 @@ class Movement:
     agent_id: str = ""
 
     def __post_init__(self):
-        self.description = transactions[self.transaction_id][0]
+        self.description = TransactionList.get_list()[self.transaction_id][0]
 
     def get_transaction_fee(self):
-        return transactions[self.transaction_id][1]
+        return TransactionList.get_list()[self.transaction_id][1]
+
+
+class TransactionList:
+    _transactions = None
+
+    @classmethod
+    def create_list(cls):
+        if not cls._transactions:
+            cls._transactions = get_transactions()
+
+    @classmethod
+    def get_list(cls):
+        return cls._transactions

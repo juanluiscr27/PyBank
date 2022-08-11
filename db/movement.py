@@ -20,7 +20,7 @@ def get_transactions():
 
             cursor.execute(query)
             for transaction_id, transaction_desc, fee, access_level in cursor:
-                transactions[transaction_id] = [transaction_desc, fee, access_level]
+                transactions[transaction_id] = [transaction_desc, float(fee), access_level]
 
             cursor.close()
         return transactions
