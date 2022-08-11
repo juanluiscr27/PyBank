@@ -21,9 +21,9 @@ class Movement:
     movement_id: int = 0
     source_account: str = ""
     destination_account: str = ""
-    amount: int = 0
-    previous_balance: int = 0
-    new_balance: int = 0
+    amount: float = 0
+    previous_balance: float = 0
+    new_balance: float = 0
     movement_date: datetime = None
     description: str = field(init=False)
     agent_id: str = ""

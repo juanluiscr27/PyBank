@@ -148,8 +148,8 @@ def search_account(search_string: str, account_result: list, result: Return):
                     bank_account = Account(
                         acc_number=acc_number,
                         acc_type_id=acc_type,
-                        balance=balance,
-                        transfer_amount=transfer_amount,
+                        balance=float(balance),
+                        transfer_amount=float(transfer_amount),
                         transfer_quantity=transfer_quantity,
                         customer_id=customer_id,
                         open_date=open_date,
