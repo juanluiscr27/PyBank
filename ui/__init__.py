@@ -7,4 +7,5 @@ from datetime import datetime
 
 from model.agent import Agent
 from model.customer import Customer
+from model.account import Account
 from model.result import Return
