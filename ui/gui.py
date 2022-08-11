@@ -1,3 +1,4 @@
+from model.movement import Movement
 from model.product import Product
 from ui import *
 from model import util
@@ -237,9 +238,9 @@ class GUI:
                 for i in cls.accounts:
                     chart_accounts.append(i.acc_type.product_type + "\n" + i.acc_number + "\n$" + str(i.balance))
                     chart_balances.append(i.balance)
-                    plt.title("Money distribution")
-                    plt.pie(chart_balances, labels=chart_accounts)
-                    plt.show()
+                plt.title("Money distribution")
+                plt.pie(chart_balances, labels=chart_accounts)
+                plt.show()
             except TypeError as e:
                 tk.messagebox.showerror('PyBank', 'Customer has no open accounts')
         cls.window.geometry(cls.window_size)
@@ -293,14 +294,14 @@ class GUI:
         customer_accounts.heading("account_transfer_quantity", text="TRANSFERS", anchor="center")
         accounts_results_button = ttk.Button(area, width=20, text="View account", command=action_account)
         accounts_results_button.grid(column=40, row=6, columnspan=8, rowspan=5)
-        open_account_button = ttk.Button(area, width=20, text="Update customer", command=action_update_customer)
-        open_account_button.grid(column=40, row=1, columnspan=8)
-        open_account_button = ttk.Button(area, width=20, text="Delete customer", command=action_delete_customer)
-        open_account_button.grid(column=40, row=2, columnspan=8)
+        update_customer_button = ttk.Button(area, width=20, text="Update customer", command=action_update_customer)
+        update_customer_button.grid(column=40, row=1, columnspan=8)
+        delete_customer_button = ttk.Button(area, width=20, text="Delete customer", command=action_delete_customer)
+        delete_customer_button.grid(column=40, row=2, columnspan=8)
         open_account_button = ttk.Button(area, width=20, text="Open account", command=action_open_account)
         open_account_button.grid(column=40, row=3, columnspan=8)
-        open_account_button = ttk.Button(area, width=20, text="Money chart", command=action_money_chart)
-        open_account_button.grid(column=40, row=4, columnspan=8)
+        chart_button = ttk.Button(area, width=20, text="Money chart", command=action_money_chart)
+        chart_button.grid(column=40, row=4, columnspan=8)
         cls.accounts = util.view_customer(cls.active_customer.customer_id, cls.result)
         if cls.result.code == "00":
             for i in cls.accounts:
@@ -499,6 +500,20 @@ class GUI:
         def action_close_account():
             area.destroy()
             cls.close_account()
+        def action_advisor():
+            try:
+                income = 0
+                outcome = 0
+                for i in cls.movements:
+                    if i.source_account == cls.active_account.acc_number:
+                        outcome += i.amount
+                    if i.destination_account == cls.active_account.acc_number:
+                        income += i.amount
+                plt.title("Money advisor")
+                plt.bar(["Income", "Outcome"], [income, outcome], color=["Green", "Red"])
+                plt.show()
+            except TypeError as e:
+                tk.messagebox.showerror('PyBank', 'Account has no movements')
         cls.window.geometry(cls.window_size)
         cls.create_top_menu()
         agent_name_label = ttk.Label(cls.window, text=cls.active_agent.first_name + " " + cls.active_agent.last_name)
@@ -574,8 +589,10 @@ class GUI:
         withdrawal_button.grid(column=40, row=2, columnspan=8)
         transfer_button = ttk.Button(area, width=20, text="Transfer", command=action_transfer)
         transfer_button.grid(column=40, row=3, columnspan=8)
+        action_advisor = ttk.Button(area, width=20, text="Money advisor", command=action_advisor)
+        action_advisor.grid(column=40, row=4, columnspan=8)
         delete_account_button = ttk.Button(area, width=20, text="Close account", command=action_close_account)
-        delete_account_button.grid(column=40, row=4, columnspan=8)
+        delete_account_button.grid(column=40, row=5, columnspan=8)
         cls.movements = util.view_account(cls.active_account.acc_number, cls.result)
         if cls.result.code == "00":
             for i in cls.movements:
@@ -745,11 +762,7 @@ class GUI:
     @classmethod
     def deposit(cls):
         def action_confirm():
-            cls.active_movement.source_account = ""
-            cls.active_movement.destination_account = cls.active_account.acc_number
-            cls.active_movement.amount = amount.get()
-            cls.active_movement.transaction_id = 7
-            cls.active_movement.agent_id = cls.active_agent.username
+            cls.active_movement = Movement(destination_account=cls.active_account.acc_number, amount=amount.get(), transaction_id=7, agent_id=cls.active_agent.username)
             util.deposit(cls.active_movement, cls.active_account, cls.result)
             if cls.result.code == "00":
                 tk.messagebox.showinfo('PyBank', 'Deposit successful')
@@ -826,11 +839,7 @@ class GUI:
     def withdrawal(cls):
         def action_confirm():
             if cls.active_customer.pin == pin.get():
-                cls.active_movement.source_account = cls.active_account.acc_number
-                cls.active_movement.destination_account = ""
-                cls.active_movement.amount = amount.get()
-                cls.active_movement.transaction_id = 8
-                cls.active_movement.agent_id = cls.active_agent.username
+                cls.active_movement = Movement(source_account=cls.active_account.acc_number, amount=amount.get(), transaction_id=8, agent_id=cls.active_agent.username)
                 util.withdrawal(cls.active_movement, cls.active_account, cls.result)
                 if cls.result.code == "00":
                     tk.messagebox.showinfo('PyBank', 'Withdrawal successful')
@@ -914,11 +923,7 @@ class GUI:
     def transfer(cls):
         def action_confirm():
             if cls.active_customer.pin == pin.get():
-                cls.active_movement.source_account = cls.active_account.acc_number
-                cls.active_movement.destination_account = destination.get()
-                cls.active_movement.amount = amount.get()
-                cls.active_movement.transaction_id = 9
-                cls.active_movement.agent_id = cls.active_agent.username
+                cls.active_movement = Movement(source_account=cls.active_account.acc_number, destination_account=destination.get(), amount=amount.get(), transaction_id=9, agent_id=cls.active_agent.username)
                 util.transfer(cls.active_movement, cls.active_account, cls.result)
                 if cls.result.code == "00":
                     tk.messagebox.showinfo('PyBank', 'Transfer successful')
