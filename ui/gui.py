@@ -510,7 +510,9 @@ class GUI:
                     if i.destination_account == cls.active_account.acc_number:
                         income += i.amount
                 plt.title("Money advisor")
-                plt.bar(["Income", "Outcome"], [income, outcome], color=["Green", "Red"])
+                for i in plt.bar(["Income", "Outcome"], [income, outcome], color=["Green", "Red"]):
+                    y_value = i.get_height()
+                    plt.text(i.get_x() + i.get_width() / 3, y_value, "$" + str(y_value), va="bottom")
                 plt.show()
             except TypeError as e:
                 tk.messagebox.showerror('PyBank', 'Account has no movements')
