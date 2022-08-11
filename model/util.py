@@ -1,3 +1,7 @@
+""" Term Project - PyBank
+CSD 4523 - Python II
+CSAM   Group 02   2022S
+"""
 from datetime import datetime
 from random import randint
 
@@ -169,13 +173,23 @@ def deposit(active_movement, active_account, result):
     result.set_code("99")
     fee = active_movement.get_transaction_fee()
     active_movement.previous_balance = active_account.balance
-    active_movement.new_balance = active_account.balance + active_movement.amount - fee
+    active_movement.new_balance = active_account.balance + active_movement.amount
     active_account.balance = active_movement.new_balance
     active_movement.movement_date = datetime.now()
     movement.create_transaction(active_movement, result)
     if result.code == "00":
-        account.update_account(active_account, result)
-        # print("Deposit Successful")
+        fee_movement = active_movement.copy()
+        fee_movement.amount = fee
+        fee_movement.transaction_id = 10
+        fee_movement.destination_account = "000000000"
+        fee_movement.source_account = active_account.acc_number
+        fee_movement.previous_balance = active_account.balance
+        fee_movement.new_balance = active_account.balance - fee
+        active_account.balance = fee_movement.new_balance
+        movement.create_transaction(fee_movement, result)
+        if result.code == "00":
+            account.update_account(active_account, result)
+            # print("Deposit Successful")
 
 
 def withdrawal(active_movement, active_account, result):
@@ -183,9 +197,9 @@ def withdrawal(active_movement, active_account, result):
     result.set_code("99")
     fee = active_movement.get_transaction_fee()
     active_movement.previous_balance = active_account.balance
-    active_movement.new_balance = active_account.balance - active_movement.amount - fee
+    active_movement.new_balance = active_account.balance - active_movement.amount
     active_movement.movement_date = datetime.now()
-    if active_movement.new_balance < active_account.acc_type.minimum_balance:
+    if active_movement.new_balance - fee < active_account.acc_type.minimum_balance:
         result.set_code("06")
         # print(result.message)
     else:
@@ -194,8 +208,18 @@ def withdrawal(active_movement, active_account, result):
         active_account.balance = active_movement.new_balance
         movement.create_transaction(active_movement, result)
         if result.code == "00":
-            account.update_account(active_account, result)
-            print("Withdrawal Successful")
+            fee_movement = active_movement.copy()
+            fee_movement.amount = fee
+            fee_movement.transaction_id = 10
+            fee_movement.destination_account = "000000000"
+            fee_movement.source_account = active_account.acc_number
+            fee_movement.previous_balance = active_account.balance
+            fee_movement.new_balance = active_account.balance - fee
+            active_account.balance = fee_movement.new_balance
+            movement.create_transaction(fee_movement, result)
+            if result.code == "00":
+                account.update_account(active_account, result)
+                # print("Withdrawal Successful")
 
 
 def transfer(active_movement, active_account, result):
@@ -210,9 +234,9 @@ def transfer(active_movement, active_account, result):
         active_movement.destination_account = destination_account.acc_number
         fee = active_movement.get_transaction_fee()
         active_movement.previous_balance = active_account.balance
-        active_movement.new_balance = active_account.balance - active_movement.amount - fee
+        active_movement.new_balance = active_account.balance - active_movement.amount
         active_movement.movement_date = datetime.now()
-        if active_movement.new_balance < active_product.minimum_balance:
+        if active_movement.new_balance - fee < active_product.minimum_balance:
             result.set_code("06")
         elif active_account.transfer_quantity + 1 > active_product.quantity_limit:
             result.set_code("07")
@@ -224,11 +248,21 @@ def transfer(active_movement, active_account, result):
             active_account.balance = active_movement.new_balance
             movement.create_transaction(active_movement, result)
             if result.code == "00":
-                account.update_account(active_account, result)
-                destination_account.balance += active_movement.amount
-                account.update_account(destination_account, result)
+                fee_movement = active_movement.copy()
+                fee_movement.amount = fee
+                fee_movement.transaction_id = 10
+                fee_movement.destination_account = "000000000"
+                fee_movement.source_account = active_account.acc_number
+                fee_movement.previous_balance = active_account.balance
+                fee_movement.new_balance = active_account.balance - fee
+                active_account.balance = fee_movement.new_balance
+                movement.create_transaction(fee_movement, result)
                 if result.code == "00":
-                    print("Transfer Successful")
+                    account.update_account(active_account, result)
+                    if result.code == "00":
+                        destination_account.balance += active_movement.amount
+                        account.update_account(destination_account, result)
+                        # print("Transfer Successful")
     else:
         result.set_code("09")
         # print(result.message)
