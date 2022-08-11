@@ -3,12 +3,8 @@ CSD 4523 - Python II
 CSAM   Group 02   2022S
 """
 from db.database_conn import ConnectionPool
-import tkinter as tk
-
-from model.agent import Agent
 from model.movement import TransactionList
 from model.product import ProductList
-from model.result import Return
 from ui.gui import *
 
 
@@ -19,7 +15,7 @@ def main():
         'user': 'pybank',
         'password': 'Lambton2022S',
         'host': 'localhost',
-        'port': '3306',
+        'port': '3307',
         'database': 'pybank',
         'pool_name': 'pybank_conn_pool',
         'pool_size': 1
@@ -27,6 +23,7 @@ def main():
 
     print("* Welcome to PyBank *")
 
+    """ Database Connection """
     ConnectionPool.create_pool(**config)
 
     """ Load Lookup Tables """

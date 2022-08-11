@@ -73,6 +73,12 @@ def test():
     # tm.test_transfer()
 
 
+"""
+INSERT INTO transactions 
+  (transaction_id, transaction_desc, fee, access_level)
+VALUES  (10, 'Fee', 0, 3);
+"""
+
 # Start the program
 if __name__ == '__main__':
     test()

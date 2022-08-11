@@ -23,6 +23,20 @@ class Movement:
     def get_transaction_fee(self):
         return TransactionList.get_list()[self.transaction_id][1]
 
+    def copy(self):
+        movement_copy = Movement(
+            movement_id=self.movement_id,
+            source_account=self.source_account,
+            destination_account=self.destination_account,
+            amount=self.amount,
+            previous_balance=self.previous_balance,
+            new_balance=self.new_balance,
+            movement_date=self.movement_date,
+            transaction_id=self.transaction_id,
+            agent_id=self.agent_id
+        )
+        return movement_copy
+
 
 class TransactionList:
     _transactions = None
