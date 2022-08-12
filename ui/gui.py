@@ -393,15 +393,20 @@ class GUI:
         def action_confirm():
             re_phone = re.compile(r'([1-9]{3})\W*(\d{3})\W*(\d{4})\W*(\d*)$')
             re_pin = re.compile(r'\d{4}$')
-            if customer_pin.get() != "" and customer_first_name.get() != "" and customer_last_name.get() != "" and customer_address.get() != "" and customer_phone.get() != "" and customer_email.get() != "":
+            if customer_pin.get() != "" and customer_first_name.get() != "" and customer_last_name.get() != "" and customer_address.get() != "" and customer_phone.get() != "":
                 if not re.fullmatch(re_phone, customer_phone.get()):
                     tk.messagebox.showerror('PyBank', 'Phone not valid')
                 elif not re.fullmatch(re_pin, customer_pin.get()):
                     tk.messagebox.showerror('PyBank', 'PIN not valid')
                 else:
+                    cls.active_customer.pin=customer_pin.get()
+                    cls.active_customer.first_name=customer_first_name.get()
+                    cls.active_customer.last_name=customer_last_name.get()
+                    cls.active_customer.address=customer_address.get()
+                    cls.active_customer.phone_number=customer_phone.get()
                     util.update_customer(cls.active_customer, cls.result)
                     if cls.result.code == "00":
-                        tk.messagebox.showinfo('PyBank', 'Customer ' + cls.active_customer.customer_id + ' updated')
+                        tk.messagebox.showinfo('PyBank', 'Customer ' + str(cls.active_customer.customer_id) + ' updated')
                         area.destroy()
                         cls.view_customer()
                     else:
@@ -521,13 +526,17 @@ class GUI:
             try:
                 income = 0
                 outcome = 0
+                fees = 0
                 for i in cls.movements:
                     if i.source_account == cls.active_account.acc_number:
-                        outcome += i.amount
+                        if i.transaction_id == 10:
+                            fees += i.amount
+                        else:
+                            outcome += i.amount
                     if i.destination_account == cls.active_account.acc_number:
                         income += i.amount
                 plt.title("Money advisor")
-                for i in plt.bar(["Income", "Outcome"], [income, outcome], color=["Green", "Red"]):
+                for i in plt.bar(["Income", "Outcome", "Fees"], [income, outcome, fees], color=["Green", "Red", "Gray"]):
                     y_value = i.get_height()
                     plt.text(i.get_x() + i.get_width() / 3, y_value, "$" + str(y_value), va="bottom")
                 plt.show()
@@ -617,7 +626,10 @@ class GUI:
             for i in cls.movements:
                 account_movements.insert(parent='', index='end', values=(i.movement_date, i.description, i.source_account, i.destination_account, i.amount))
         else:
-            tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+            if cls.result.code != "99":
+                tk.messagebox.showinfo('PyBank', cls.result.code + " - " + cls.result.message)
+            else:
+                tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
 
     @classmethod
     def open_account(cls):
