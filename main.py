@@ -15,7 +15,7 @@ def main():
         'user': 'pybank',
         'password': 'Lambton2022S',
         'host': 'localhost',
-        'port': '3307',
+        'port': '3306',
         'database': 'pybank',
         'pool_name': 'pybank_conn_pool',
         'pool_size': 1

@@ -315,21 +315,31 @@ class GUI:
     @classmethod
     def new_customer(cls):
         def action_confirm():
+            re_phone = re.compile(r'([1-9]{3})\W*(\d{3})\W*(\d{4})\W*(\d*)$')
+            re_email = re.compile(r'([A-Za-z\d]+[.-_])*[A-Za-z\d]+@[A-Za-z\d-]+(\.[A-Z|a-z]{2,})+$')
+            re_pin = re.compile(r'\d{4}$')
             if customer_pin.get() != "" and customer_first_name.get() != "" and customer_last_name.get() != "" and customer_address.get() != "" and customer_phone.get() != "" and customer_email.get() != "":
-                cls.active_customer.pin=customer_pin.get()
-                cls.active_customer.first_name=customer_first_name.get()
-                cls.active_customer.last_name=customer_last_name.get()
-                cls.active_customer.address=customer_address.get()
-                cls.active_customer.phone_number=customer_phone.get()
-                cls.active_customer.email=customer_email.get()
-                cls.active_customer.agent_id=cls.active_agent.username
-                util.create_customer(cls.active_customer, cls.result)
-                if cls.result.code == "00":
-                    tk.messagebox.showinfo('PyBank', 'Customer ' + str(cls.active_customer.customer_id) + ' created')
-                    area.destroy()
-                    cls.view_customer()
+                if not re.fullmatch(re_phone, customer_phone.get()):
+                    tk.messagebox.showerror('PyBank', 'Phone not valid')
+                elif not re.fullmatch(re_email, customer_email.get()):
+                    tk.messagebox.showerror('PyBank', 'Email not valid')
+                elif not re.fullmatch(re_pin, customer_pin.get()):
+                    tk.messagebox.showerror('PyBank', 'PIN not valid')
                 else:
-                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                    cls.active_customer.pin=customer_pin.get()
+                    cls.active_customer.first_name=customer_first_name.get()
+                    cls.active_customer.last_name=customer_last_name.get()
+                    cls.active_customer.address=customer_address.get()
+                    cls.active_customer.phone_number=customer_phone.get()
+                    cls.active_customer.email=customer_email.get()
+                    cls.active_customer.agent_id=cls.active_agent.username
+                    util.create_customer(cls.active_customer, cls.result)
+                    if cls.result.code == "00":
+                        tk.messagebox.showinfo('PyBank', 'Customer ' + str(cls.active_customer.customer_id) + ' created')
+                        area.destroy()
+                        cls.view_customer()
+                    else:
+                        tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
             else:
                 tk.messagebox.showerror('PyBank', 'All fields are required')
         def action_cancel():
@@ -381,14 +391,26 @@ class GUI:
     @classmethod
     def update_customer(cls):
         def action_confirm():
+            re_phone = re.compile(r'([1-9]{3})\W*(\d{3})\W*(\d{4})\W*(\d*)$')
+            re_pin = re.compile(r'\d{4}$')
             if customer_pin.get() != "" and customer_first_name.get() != "" and customer_last_name.get() != "" and customer_address.get() != "" and customer_phone.get() != "":
-                util.update_customer(cls.active_customer, cls.result)
-                if cls.result.code == "00":
-                    tk.messagebox.showinfo('PyBank', 'Customer ' + cls.active_customer.customer_id + ' updated')
-                    area.destroy()
-                    cls.view_customer()
+                if not re.fullmatch(re_phone, customer_phone.get()):
+                    tk.messagebox.showerror('PyBank', 'Phone not valid')
+                elif not re.fullmatch(re_pin, customer_pin.get()):
+                    tk.messagebox.showerror('PyBank', 'PIN not valid')
                 else:
-                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                    cls.active_customer.pin=customer_pin.get()
+                    cls.active_customer.first_name=customer_first_name.get()
+                    cls.active_customer.last_name=customer_last_name.get()
+                    cls.active_customer.address=customer_address.get()
+                    cls.active_customer.phone_number=customer_phone.get()
+                    util.update_customer(cls.active_customer, cls.result)
+                    if cls.result.code == "00":
+                        tk.messagebox.showinfo('PyBank', 'Customer ' + str(cls.active_customer.customer_id) + ' updated')
+                        area.destroy()
+                        cls.view_customer()
+                    else:
+                        tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
             else:
                 tk.messagebox.showerror('PyBank', 'All fields are required')
         def action_cancel():
@@ -504,13 +526,17 @@ class GUI:
             try:
                 income = 0
                 outcome = 0
+                fees = 0
                 for i in cls.movements:
                     if i.source_account == cls.active_account.acc_number:
-                        outcome += i.amount
+                        if i.transaction_id == 10:
+                            fees += i.amount
+                        else:
+                            outcome += i.amount
                     if i.destination_account == cls.active_account.acc_number:
                         income += i.amount
                 plt.title("Money advisor")
-                for i in plt.bar(["Income", "Outcome"], [income, outcome], color=["Green", "Red"]):
+                for i in plt.bar(["Income", "Outcome", "Fees"], [income, outcome, fees], color=["Green", "Red", "Gray"]):
                     y_value = i.get_height()
                     plt.text(i.get_x() + i.get_width() / 3, y_value, "$" + str(y_value), va="bottom")
                 plt.show()
@@ -574,7 +600,7 @@ class GUI:
         account_movements.grid(column=0, row=8, columnspan=40, rowspan=5)
         account_movements['columns'] = ('date', 'transaction', 'source_account', 'destination_account', 'amount')
         account_movements.column("#0", width=0, stretch=False)
-        account_movements.column("date", anchor="center", width=100)
+        account_movements.column("date", anchor="center", width=200)
         account_movements.column("transaction", anchor="center", width=100)
         account_movements.column("source_account", anchor="center", width=100)
         account_movements.column("destination_account", anchor="center", width=100)
@@ -600,7 +626,10 @@ class GUI:
             for i in cls.movements:
                 account_movements.insert(parent='', index='end', values=(i.movement_date, i.description, i.source_account, i.destination_account, i.amount))
         else:
-            tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+            if cls.result.code != "99":
+                tk.messagebox.showinfo('PyBank', cls.result.code + " - " + cls.result.message)
+            else:
+                tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
 
     @classmethod
     def open_account(cls):
@@ -764,14 +793,18 @@ class GUI:
     @classmethod
     def deposit(cls):
         def action_confirm():
-            cls.active_movement = Movement(destination_account=cls.active_account.acc_number, amount=amount.get(), transaction_id=7, agent_id=cls.active_agent.username)
-            util.deposit(cls.active_movement, cls.active_account, cls.result)
-            if cls.result.code == "00":
-                tk.messagebox.showinfo('PyBank', 'Deposit successful')
-                area.destroy()
-                cls.view_account()
+            re_amount = re.compile(r'[1-9]\d*(\.\d{2})*')
+            if re.fullmatch(re_amount, amount.get()):
+                cls.active_movement = Movement(destination_account=cls.active_account.acc_number, amount=float(amount.get()), transaction_id=7, agent_id=cls.active_agent.username)
+                util.deposit(cls.active_movement, cls.active_account, cls.result)
+                if cls.result.code == "00":
+                    tk.messagebox.showinfo('PyBank', 'Deposit successful')
+                    area.destroy()
+                    cls.view_account()
+                else:
+                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
             else:
-                tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                tk.messagebox.showerror('PyBank', "Amount not valid")
         def action_cancel():
             area.destroy()
             cls.view_account()
@@ -829,7 +862,7 @@ class GUI:
         transfers_text.grid(column=25, row=5, columnspan=5)
         amount_label = ttk.Label(area, text="Deposit amount")
         amount_label.grid(column=10, row=7, columnspan=5)
-        amount = tk.DoubleVar()
+        amount = tk.StringVar()
         amount_text = ttk.Entry(area, width=30, textvariable=amount)
         amount_text.grid(column=15, row=7, columnspan=10)
         confirm_button = ttk.Button(area, width=20, text="Confirm", command=action_confirm)
@@ -840,17 +873,28 @@ class GUI:
     @classmethod
     def withdrawal(cls):
         def action_confirm():
-            if cls.active_customer.pin == pin.get():
-                cls.active_movement = Movement(source_account=cls.active_account.acc_number, amount=amount.get(), transaction_id=8, agent_id=cls.active_agent.username)
-                util.withdrawal(cls.active_movement, cls.active_account, cls.result)
-                if cls.result.code == "00":
-                    tk.messagebox.showinfo('PyBank', 'Withdrawal successful')
-                    area.destroy()
-                    cls.view_account()
+            re_amount = re.compile(r'[1-9]\d*(\.\d{2})*')
+            re_pin = re.compile(r'\d{4}$')
+            if amount.get() != "" and pin.get():
+                if re.fullmatch(re_amount, amount.get()):
+                    if re.fullmatch(re_pin, pin.get()):
+                        if cls.active_customer.pin == pin.get():
+                            cls.active_movement = Movement(source_account=cls.active_account.acc_number, amount=float(amount.get()), transaction_id=8, agent_id=cls.active_agent.username)
+                            util.withdrawal(cls.active_movement, cls.active_account, cls.result)
+                            if cls.result.code == "00":
+                                tk.messagebox.showinfo('PyBank', 'Withdrawal successful')
+                                area.destroy()
+                                cls.view_account()
+                            else:
+                                tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                        else:
+                            tk.messagebox.showerror('PyBank', "PIN incorrect")
+                    else:
+                        tk.messagebox.showerror('PyBank', "PIN not valid")
                 else:
-                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                    tk.messagebox.showerror('PyBank', "Amount not valid")
             else:
-                tk.messagebox.showerror('PyBank', "PIN incorrect")
+                tk.messagebox.showerror('PyBank', 'All fields are required')
         def action_cancel():
             area.destroy()
             cls.view_account()
@@ -908,7 +952,7 @@ class GUI:
         transfers_text.grid(column=25, row=5, columnspan=5)
         amount_label = ttk.Label(area, text="Withdrawal amount")
         amount_label.grid(column=10, row=7, columnspan=5)
-        amount = tk.DoubleVar()
+        amount = tk.StringVar()
         amount_text = ttk.Entry(area, width=30, textvariable=amount)
         amount_text.grid(column=15, row=7, columnspan=10)
         pin_label = ttk.Label(area, text="Pin")
@@ -924,17 +968,32 @@ class GUI:
     @classmethod
     def transfer(cls):
         def action_confirm():
-            if cls.active_customer.pin == pin.get():
-                cls.active_movement = Movement(source_account=cls.active_account.acc_number, destination_account=destination.get(), amount=amount.get(), transaction_id=9, agent_id=cls.active_agent.username)
-                util.transfer(cls.active_movement, cls.active_account, cls.result)
-                if cls.result.code == "00":
-                    tk.messagebox.showinfo('PyBank', 'Transfer successful')
-                    area.destroy()
-                    cls.view_account()
+            re_destination = re.compile(r'\d{9}$')
+            re_amount = re.compile(r'[1-9]\d*(\.\d{2})*')
+            re_pin = re.compile(r'\d{4}$')
+            if destination.get() != "" and amount.get() != "" and pin.get():
+                if re.fullmatch(re_destination, destination.get()):
+                    if re.fullmatch(re_amount, amount.get()):
+                        if re.fullmatch(re_pin, pin.get()):
+                            if cls.active_customer.pin == pin.get():
+                                cls.active_movement = Movement(source_account=cls.active_account.acc_number, destination_account=destination.get(), amount=float(amount.get()), transaction_id=9, agent_id=cls.active_agent.username)
+                                util.transfer(cls.active_movement, cls.active_account, cls.result)
+                                if cls.result.code == "00":
+                                    tk.messagebox.showinfo('PyBank', 'Transfer successful')
+                                    area.destroy()
+                                    cls.view_account()
+                                else:
+                                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                            else:
+                                tk.messagebox.showerror('PyBank', "PIN incorrect")
+                        else:
+                            tk.messagebox.showerror('PyBank', "PIN not valid")
+                    else:
+                        tk.messagebox.showerror('PyBank', "Amount not valid")
                 else:
-                    tk.messagebox.showerror('PyBank', cls.result.code + " - " + cls.result.message)
+                    tk.messagebox.showerror('PyBank', "Destination account not valid")
             else:
-                tk.messagebox.showerror('PyBank', "PIN incorrect")
+                tk.messagebox.showerror('PyBank', 'All fields are required')
         def action_cancel():
             area.destroy()
             cls.view_account()
@@ -997,7 +1056,7 @@ class GUI:
         destination_text.grid(column=15, row=7, columnspan=10)
         amount_label = ttk.Label(area, text="Transfer amount")
         amount_label.grid(column=10, row=8, columnspan=5)
-        amount = tk.DoubleVar()
+        amount = tk.StringVar()
         amount_text = ttk.Entry(area, width=30, textvariable=amount)
         amount_text.grid(column=15, row=8, columnspan=10)
         pin_label = ttk.Label(area, text="Pin")

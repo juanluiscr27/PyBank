@@ -88,6 +88,8 @@ def view_account(acc_number, account_movements: list, result: Return):
                     account_movements.append(bank_account)
 
                 result.set_code("00")
+            else:
+                result.set_code("13")
 
             cursor.close()
 

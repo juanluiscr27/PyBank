@@ -15,7 +15,8 @@ def create_table() -> dict:
                    "09": ["Destination account not found", "Check destination account"],
                    "10": ["Destination account not valid", "Use transfer own option"],
                    "11": ["Destination account not valid", "Use transfer others option"],
-                   "12": ["Account query result set empty", "Customer has no accounts"]}
+                   "12": ["Account query result set empty", "Customer has no accounts"],
+                   "13": ["Movement query result set empty", "Account has no movements"]}
 
     return error_table
 
